@@ -76,7 +76,7 @@ class ParamsEstrategia:
     k_venda: float = 2.0
     custo: float = 0.001             # por trade (fração do valor)
     caixa_rende_cdi: bool = True
-    filtro_compra: str | None = None  # "macd": compra só com MACD(12,26) > 0
+    filtro_compra: str | None = None  # "macd": MACD(12,26) > 0; "macd_cruza": cruzou o zero para cima
     filtro_venda: str | None = None   # "macd": vende também com MACD(12,26) < 0
 
 
@@ -84,7 +84,8 @@ class ParamsEstrategia:
 # nome → (k_compra, k_venda[, filtro_compra[, filtro_venda]]).
 # Compra em P/VPA < média − k_compra·σ; venda em P/VPA >= média + k_venda·σ.
 # filtro_compra "macd": a compra também exige MACD(12,26) > 0 no mesmo pregão (o sinal de
-# compra do Cenário 2 do estudo HiLo+MACD). filtro_venda "macd": também vende quando
+# compra do Cenário 2 do estudo HiLo+MACD); "macd_cruza": só no pregão em que o MACD
+# cruza o zero para cima. filtro_venda "macd": também vende quando
 # MACD(12,26) < 0, além do gatilho de P/VPA.
 VARIANTES: dict[str, tuple] = {
     "Estratégia 1": (0.0, 2.0),   # principal
@@ -95,6 +96,10 @@ VARIANTES: dict[str, tuple] = {
     "Estratégia 6": (0.0, 2.0, "macd"),
     "Estratégia 7": (0.0, 3.0),
     "Estratégia 9": (0.0, 2.0, "macd", "macd"),
+    # Venda só pelo MACD: k_venda infinito desliga o gatilho de P/VPA.
+    "Estratégia 10": (0.0, float("inf"), "macd", "macd"),
+    # Compra só no pregão em que o MACD cruza o zero para cima (ontem < 0, hoje > 0).
+    "Estratégia 11": (0.0, 2.0, "macd_cruza"),
     # Controle da Estratégia 9: só o MACD (P/VPA não restringe compra nem venda), mesmo
     # universo e mesma elegibilidade. Não é candidata: fica fora do gráfico e do DSR.
     "Controle: só MACD": (-1e9, 1e9, "macd", "macd"),

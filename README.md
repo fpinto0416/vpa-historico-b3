@@ -34,6 +34,8 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | Estratégia 6 | média **e** MACD(12,26) > 0 | média + 2σ | 9,75% | 0,05 | −15,6% | 70% | −1,53 p.p. [−5,6; +2,0] | 0 |
 | Estratégia 7 | média | média + 3σ | 10,92% | 0,15 | −23,5% | 83% | −0,27 p.p. [−4,8; +3,9] | 0 |
 | Estratégia 9 | média **e** MACD > 0 | média + 2σ **ou** MACD < 0 | 11,93% | 0,31 | −7,5% | 31% | +1,19 p.p. [−1,6; +4,4] | 0 |
+| Estratégia 10 | média **e** MACD > 0 | só MACD < 0 | 11,96% | 0,31 | −8,4% | 31% | +1,21 p.p. [−1,6; +4,4] | 0 |
+| Estratégia 11 | média **e** MACD cruza 0 para cima | média + 2σ | 9,78% | 0,05 | −14,6% | 67% | −1,50 p.p. [−5,2; +1,8] | 0 |
 | *Controle: só MACD* | *MACD > 0* | *MACD < 0* | *19,86%* | *0,57* | *−45,7%* | *49%* | *+8,73 p.p. [−0,9; +20,4]* | *0* |
 
 Nenhuma se distingue do mix fixo com a própria exposição. A Estratégia 5 tem o melhor Sharpe (0,24)
@@ -48,6 +50,8 @@ entre as candidatas, mas ainda com IC cruzando zero e sensível a custo (com 0,5
 −0,71 p.p. contra o mix). O controle só com MACD rende 19,86% porque surfa MGLU3 (435x) e PRIO3 (191x) e fica
 fora das quedas delas; sem os 5 que mais somaram (MGLU3, PRIO3, ROMI3, JHSF3, USIM5) a vantagem cai de +8,98
 para +0,74 p.p. É survivorship: são as maiores altas da lista de hoje. O controle fica fora do DSR.
+A Estratégia 10 (venda só pelo MACD) dá o mesmo que a 9: a saída por média + 2σ quase nunca dispara antes do
+MACD virar. A Estratégia 11 (compra só no dia em que o MACD cruza o zero para cima) dá o mesmo que a 6.
 
 **Concentração:** "sem os 5" tira os 5 slots que mais somaram em R$ contra o próprio buy & hold. Com esse critério
 todas as candidatas ficam negativas contra o B&H (de −0,25 a −2,0 p.p.).

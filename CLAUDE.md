@@ -102,6 +102,9 @@ Saídas: `data/processed/vpa_trimestral.{parquet,csv}` (fora do git; só `amostr
   5.040 trades, DSR 0,74; vs mix +1,19 [−1,6; +4,4]; com custo 0,5% cai a 10,02%. "Controle: só MACD"
   (k_compra −1e9, k_venda 1e9) = 19,86% puxado por MGLU3/PRIO3 (survivorship; slots não rebalanceiam,
   por isso difere do estudo HiLo+MACD que rebalanceava diário); fica fora do gráfico e do DSR.
+- E10 e E11 vieram da regra literal "Compra: média e MACD > 0 e MACD < 0" (contraditória; o usuário
+  repetiu sem esclarecer). E10 = venda só MACD<0 (≈ E9); E11 = compra no cruzamento do zero para cima
+  (macd_cruza), venda +2σ (≈ E6, 9,78% = CDI). Se ele esclarecer, ajustar.
 - "Sem top 5" = 5 slots com maior contribuição em R$ (não maior dif. de CAGR) desde 02/10; com isso todas
   as candidatas ficam negativas vs B&H. Nenhuma bate o
   mix da própria exposição. Grade de sensibilidade ampliada para k_compra 2 → 49 tentativas no DSR.

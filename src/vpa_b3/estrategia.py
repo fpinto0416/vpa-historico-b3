@@ -73,6 +73,8 @@ def sinais(est: pd.DataFrame, p: ParamsEstrategia) -> pd.DataFrame:
     compra = est["elegivel"] & (pv < est["media"] - p.k_compra * est["desvio"])
     if p.filtro_compra == "macd":
         compra &= est["macd"] > 0
+    elif p.filtro_compra == "macd_cruza":
+        compra &= (est["macd"] > 0) & (est["macd"].shift(1) < 0)
     elif p.filtro_compra is not None:
         raise ValueError(f"filtro_compra inválido: {p.filtro_compra}")
     if p.gatilho_venda == "maximo":
