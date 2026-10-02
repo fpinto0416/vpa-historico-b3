@@ -1,6 +1,7 @@
 """Parâmetros do pipeline: universo de tickers, caminhos e estratégia."""
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -12,6 +13,8 @@ DIR_PROC = RAIZ / "data" / "processed"
 DIR_REPORTS = RAIZ / "reports"
 
 URL_CVM = "https://dados.cvm.gov.br/dados/CIA_ABERTA"
+# Zips COTAHIST da B3 (COTAHIST_AAAA.ZIP), usados só para emendar lacunas do yfinance.
+DIR_COTAHIST = Path(os.environ.get("VPA_DIR_COTAHIST", "/app/volatilidade_implicita"))
 URL_CAD = f"{URL_CVM}/CAD/DADOS/cad_cia_aberta.csv"
 
 # Piso rígido: antes de 2000 as barreiras cambiais distorcem a série.
@@ -35,10 +38,33 @@ EQTL3 KLBN11 GFSA3 GRND3 TTEN3 PLPL3 AMAR3 ROMI3 BBDC3 SANB11
 # (banco, grupamento 30:1, unit pagadora de dividendos, ticker renomeado).
 TICKERS_POC = ["PETR4", "ITUB4", "IRBR3", "TAEE11", "AXIA3"]
 
-# Mapeamento manual para quando o histórico da companhia atravessa CNPJs
-# diferentes (reorganizações societárias). Cada entrada: (cnpj, de, até).
-# Datas são de referência do balanço; None = sem limite.
-CNPJ_MANUAL: dict[str, list[tuple[str, str | None, str | None]]] = {}
+# Mapeamento manual. Usado quando o campo de ticker do FCA vem com lixo (código
+# CVM no lugar do ticker) ou quando o histórico da companhia atravessa CNPJs.
+# cnpjs: lista de (cnpj, ref_date inicial, ref_date final); None = sem limite.
+MAPA_MANUAL: dict[str, dict] = {
+    "CSNA3": {"cnpjs": [("33.042.730/0001-04", None, None)],
+              "obs": "FCA traz o código CVM (4030) no campo de ticker"},
+    "CMIN3": {"cnpjs": [("08.902.291/0001-15", None, None)],
+              "obs": "FCA traz o código CVM (25585) no campo de ticker"},
+    "AMAR3": {"cnpjs": [("61.189.288/0001-89", None, None)],
+              "obs": "FCA traz o código CVM (022055) no campo de ticker"},
+    "BPAC11": {"cnpjs": [("30.306.294/0001-45", None, None)], "fator_unit": 3.0,
+               "obs": "FCA traz 000000 no ticker; unit = 1 ON + 2 PNA"},
+    "MBRF3": {"cnpjs": [("03.853.896/0001-40", None, None)],
+              "obs": "ex-MRFG3 (Marfrig, que já consolidava a BRF); FCA traz 'ADR' no ticker. "
+                     "O PL da BRF antes da incorporação só entra via consolidação na Marfrig"},
+    "NATU3": {"cnpjs": [("71.673.990/0001-77", None, "2019-09-30"),
+                        ("32.785.497/0001-97", "2019-12-31", "2025-06-30"),
+                        ("71.673.990/0001-77", "2025-09-30", None)],
+              "obs": "Natura Cosméticos → Natura &Co Holding (NTCO3) → Natura Cosméticos; "
+                     "trocas de ações ~1:1 (o 2:1 de 2019 está nos splits do yfinance)"},
+}
+
+# Lacunas do yfinance preenchidas com o fechamento do COTAHIST de outro código
+# (ticker antigo). (código, de, até): datas inclusivas da lacuna.
+REMENDO_PRECOS: dict[str, list[tuple[str, str, str]]] = {
+    "NATU3": [("NTCO3", "2019-12-18", "2025-07-01")],  # yfinance não tem NTCO3; troca ~1:1
+}
 
 
 @dataclass(frozen=True)

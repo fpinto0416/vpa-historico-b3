@@ -7,7 +7,8 @@ from vpa_b3 import precos, processamento
 from vpa_b3.mapeamento import fator_unit
 
 
-@pytest.mark.parametrize("comp,esperado", [("1 ON / 2 PN", 3.0), ("1 ON / 4 PN", 5.0), (None, 1.0), ("", 1.0)])
+@pytest.mark.parametrize("comp,esperado", [("1 ON / 2 PN", 3.0), ("1 ON / 4 PN", 5.0), (None, 1.0), ("", 1.0),
+                                              ("1 KLBN3 + 4 KLBN4", 5.0), ("1 ON E 2 PNA", 3.0)])
 def test_fator_unit(comp, esperado):
     assert fator_unit(comp) == esperado
 
@@ -55,3 +56,12 @@ def test_pvpa_indefinido_com_pl_negativo():
     vpa = _vpa([("2020-03-31", "2020-06-30", -5.0)])
     px = pd.DataFrame({"close": 40.0, "adj_close": 40.0}, index=pd.bdate_range("2020-07-01", "2020-07-10"))
     assert processamento.pvpa_diario(vpa, px)["pvpa"].isna().all()
+
+
+def test_regime_conta_quebra_de_trimestre_descartado():
+    vpa = _vpa([("2020-03-31", "2020-11-15", 10.0), ("2020-06-30", "2020-10-01", 20.0),
+                ("2020-09-30", "2020-12-30", 21.0)])
+    vpa["flag_quebra_estrutural"] = [True, False, False]
+    px = pd.DataFrame({"close": 40.0, "adj_close": 40.0}, index=pd.bdate_range("2020-10-01", "2021-01-10"))
+    out = processamento.pvpa_diario(vpa, px)
+    assert (out["regime"] == 1).all()

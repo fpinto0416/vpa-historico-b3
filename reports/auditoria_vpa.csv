@@ -1,21 +1,387 @@
 ticker,ref_date,evento,detalhe
 PETR4,2020-03-31,outlier_vpa,vpa_ajustado=17.7726
 PETR4,2020-12-31,outlier_vpa,vpa_ajustado=23.6435
+VALE3,2015-12-31,outlier_vpa,vpa_ajustado=25.0100
+BBAS3,2016-06-30,reescala_split_nao_registrado,ações x10 com PL x0.993
+BBAS3,2015-06-30,reescala_split_nao_registrado,ações x0.1 com PL x0.991
+BBAS3,2015-06-30,salto_n_acoes_sem_split,ações x0.100 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBAS3,2016-06-30,salto_n_acoes_sem_split,ações x10.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC4,2019-03-31,correcao_timing_split,ações na base atual 12879548819 → 10732957349 (do trimestre seguinte)
+BBDC4,2017-03-31,salto_n_acoes_sem_split,ações x1.210 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC4,2019-03-31,salto_n_acoes_sem_split,ações x1.200 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC4,2019-06-30,salto_n_acoes_sem_split,ações x1.000 vs splits x1.200 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC4,2017-03-31,outlier_vpa,vpa_ajustado=8.8562
+SIMH3,2021-06-30,correcao_timing_split,ações na base atual 1603474280 → 400873148 (do trimestre seguinte)
+SIMH3,2020-09-30,salto_n_acoes_sem_split,ações x1.915 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SIMH3,2021-06-30,salto_n_acoes_sem_split,ações x4.009 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SIMH3,2021-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x4.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SIMH3,2026-06-30,salto_n_acoes_sem_split,ações x1.368 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2015-09-30,correcao_timing_split,ações na base atual 72656415 → 581251319 (do trimestre seguinte)
+MGLU3,2019-09-30,correcao_timing_split,ações na base atual 80048415 → 682387319 (do trimestre seguinte)
+MGLU3,2020-09-30,correcao_timing_split,ações na base atual 2719878109 → 678655652 (do trimestre seguinte)
+MGLU3,2015-09-30,salto_n_acoes_sem_split,ações x0.119 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2015-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x0.125 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2019-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x8.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2019-12-31,salto_n_acoes_sem_split,ações x8.525 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2020-09-30,salto_n_acoes_sem_split,ações x3.995 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2020-12-31,salto_n_acoes_sem_split,ações x0.998 vs splits x4.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MGLU3,2017-12-31,outlier_vpa,vpa_ajustado=3.2386
+MGLU3,2019-12-31,outlier_vpa,vpa_ajustado=11.0860
+CSNA3,2015-12-31,outlier_vpa,vpa_ajustado=5.5240
+CSNA3,2020-03-31,outlier_vpa,vpa_ajustado=3.0215
+CSNA3,2020-12-31,outlier_vpa,vpa_ajustado=7.1831
+ITSA4,2018-06-30,outlier_vpa,vpa_ajustado=5.2622
 ITUB4,2018-09-30,correcao_timing_split,ações na base atual 16662128024 → 11108085349 (do trimestre seguinte)
 ITUB4,2018-09-30,salto_n_acoes_sem_split,ações x1.500 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 ITUB4,2018-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x1.500 (emissão/recompra/cancelamento ou split ausente no yfinance)
+POMO4,2025-12-31,outlier_vpa,vpa_ajustado=3.0891
+COGN3,2015-09-30,reescala_split_nao_registrado,ações x6.052 com PL x1.012
+COGN3,2014-09-30,quebra_estrutural,ações x0.25 e PL x3.589
+COGN3,2012-03-31,salto_n_acoes_sem_split,ações x1.931 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+COGN3,2014-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x4.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+COGN3,2015-09-30,salto_n_acoes_sem_split,ações x6.052 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+COGN3,2014-09-30,outlier_vpa,vpa_ajustado=6.2440
+SUZB3,2026-03-31,correcao_timing_split,ações na base atual 983909965 → 1233136722 (do trimestre seguinte)
+SUZB3,2012-09-30,reescala_split_nao_registrado,ações x2.709 com PL x1.014
+SUZB3,2012-09-30,salto_n_acoes_sem_split,ações x2.709 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SUZB3,2018-09-30,salto_n_acoes_sem_split,ações x1.231 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SUZB3,2026-03-31,salto_n_acoes_sem_split,ações x0.796 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SUZB3,2026-06-30,salto_n_acoes_sem_split,ações x1.253 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SUZB3,2020-03-31,outlier_vpa,vpa_ajustado=3.3707
+SUZB3,2020-12-31,outlier_vpa,vpa_ajustado=5.3600
+SUZB3,2021-06-30,outlier_vpa,vpa_ajustado=10.7383
+SAPR11,2013-12-31,salto_n_acoes_sem_split,ações x1.151 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SAPR11,2013-09-30,outlier_vpa,vpa_ajustado=13.6975
+VAMO3,2020-03-31,salto_n_acoes_sem_split,ações x1.959 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VAMO3,2021-03-31,salto_n_acoes_sem_split,ações x1.191 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VAMO3,2021-03-31,outlier_vpa,vpa_ajustado=1.5814
+MRVE3,2023-09-30,salto_n_acoes_sem_split,ações x1.162 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MRVE3,2018-12-31,outlier_vpa,vpa_ajustado=10.4257
+MRVE3,2025-06-30,outlier_vpa,vpa_ajustado=9.1645
 IRBR3,2022-12-31,correcao_timing_split,ações na base atual 2728096 → 81842887 (do trimestre seguinte)
 IRBR3,2020-09-30,salto_n_acoes_sem_split,ações x1.359 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 IRBR3,2022-09-30,salto_n_acoes_sem_split,ações x1.956 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 IRBR3,2022-12-31,salto_n_acoes_sem_split,ações x0.033 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 IRBR3,2023-03-31,salto_n_acoes_sem_split,ações x1.000 vs splits x0.033 (emissão/recompra/cancelamento ou split ausente no yfinance)
 IRBR3,2022-09-30,outlier_vpa,vpa_ajustado=50.1793
-TAEE11,2012-09-30,correcao_timing_split,ações na base atual 3100490163 → 1033496721 (do trimestre seguinte)
-TAEE11,2012-09-30,salto_n_acoes_sem_split,ações x3.922 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
-TAEE11,2012-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x3.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
-TAEE11,2012-09-30,outlier_vpa,vpa_ajustado=12.2986
+BBSE3,2019-12-31,outlier_vpa,vpa_ajustado=2.6244
+EZTC3,2017-12-31,outlier_vpa,vpa_ajustado=9.9694
+EZTC3,2019-09-30,outlier_vpa,vpa_ajustado=12.8919
+LREN3,2015-09-30,correcao_timing_split,ações na base atual 186518383 → 937084504 (do trimestre seguinte)
+LREN3,2015-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x5.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+LREN3,2015-12-31,salto_n_acoes_sem_split,ações x5.024 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+LREN3,2021-06-30,outlier_vpa,vpa_ajustado=8.6201
+BRAV3,2020-09-30,correcao_timing_split,ações na base atual 1189074 → 109504342 (do trimestre seguinte)
+BRAV3,2020-09-30,reescala_split_nao_registrado,ações x2.558 com PL x0.982
+BRAV3,2020-09-30,salto_n_acoes_sem_split,ações x0.028 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2020-12-31,salto_n_acoes_sem_split,ações x92.092 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2021-03-31,salto_n_acoes_sem_split,ações x1.209 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2021-12-31,salto_n_acoes_sem_split,ações x1.531 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2023-06-30,salto_n_acoes_sem_split,ações x1.181 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2024-09-30,salto_n_acoes_sem_split,ações x1.931 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRAV3,2020-12-31,outlier_vpa,vpa_ajustado=9.8361
+CSAN3,2021-03-31,salto_n_acoes_sem_split,ações x1.216 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CSAN3,2025-12-31,salto_n_acoes_sem_split,ações x2.130 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CSAN3,2024-12-31,outlier_vpa,vpa_ajustado=5.8534
+CSAN3,2025-12-31,outlier_vpa,vpa_ajustado=1.3396
+RAIZ4,2021-06-30,quebra_estrutural,ações x5.159 e PL x1.906
+RAIZ4,2021-06-30,salto_n_acoes_sem_split,ações x5.159 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RAIZ4,2021-09-30,salto_n_acoes_sem_split,ações x1.151 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RAIZ4,2026-06-30,salto_n_acoes_sem_split,ações x0.440 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RAIZ4,2021-06-30,outlier_vpa,vpa_ajustado=1.1288
+RAIZ4,2025-12-31,pl_negativo,pl_controladores=-1596884000
+RAIZ4,2026-03-31,pl_negativo,pl_controladores=-8732236000
+RAIZ4,2026-06-30,pl_negativo,pl_controladores=-11162283000
+AZZA3,2024-09-30,salto_n_acoes_sem_split,ações x1.860 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AZZA3,2020-12-31,outlier_vpa,vpa_ajustado=13.5365
+AZZA3,2022-03-31,outlier_vpa,vpa_ajustado=22.7560
+JHSF3,2015-03-31,salto_n_acoes_sem_split,ações x1.215 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+JHSF3,2020-03-31,salto_n_acoes_sem_split,ações x1.210 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+JHSF3,2013-12-31,outlier_vpa,vpa_ajustado=5.1240
+NATU3,2019-12-31,n_acoes_ausente,nº de ações herdado do trimestre anterior
+NATU3,2020-03-31,correcao_timing_split,ações na base atual 1187843 → 1250866000 (do trimestre seguinte)
+NATU3,2025-12-31,correcao_timing_split,ações na base atual 1772986000 → 1374181000 (do trimestre seguinte)
+NATU3,2020-03-31,quebra_estrutural,ações x2.885 e PL x6.027
+NATU3,2019-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x2.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+NATU3,2020-03-31,salto_n_acoes_sem_split,ações x0.003 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+NATU3,2020-06-30,salto_n_acoes_sem_split,ações x1053.057 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+NATU3,2025-12-31,salto_n_acoes_sem_split,ações x1.291 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+NATU3,2026-03-31,salto_n_acoes_sem_split,ações x0.775 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+NATU3,2019-09-30,outlier_vpa,vpa_ajustado=7.0535
+NATU3,2020-03-31,outlier_vpa,vpa_ajustado=16.2017
+AUAU3,2025-03-31,reescala_split_nao_registrado,ações x110.5 com PL x1.016
+AUAU3,2025-03-31,salto_n_acoes_sem_split,ações x110.461 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AUAU3,2026-03-31,salto_n_acoes_sem_split,ações x2.113 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2013-03-31,salto_n_acoes_sem_split,ações x1.400 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2015-03-31,salto_n_acoes_sem_split,ações x1.195 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2016-06-30,salto_n_acoes_sem_split,ações x1.347 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2019-06-30,salto_n_acoes_sem_split,ações x1.685 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2020-03-31,salto_n_acoes_sem_split,ações x1.281 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2025-06-30,salto_n_acoes_sem_split,ações x1.658 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BEEF3,2024-06-30,outlier_vpa,vpa_ajustado=1.1413
+BEEF3,2015-03-31,pl_negativo,pl_controladores=-29785000
+BEEF3,2015-09-30,pl_negativo,pl_controladores=-466888000
+BEEF3,2015-12-31,pl_negativo,pl_controladores=-384069000
+BEEF3,2018-03-31,pl_negativo,pl_controladores=-63819000
+BEEF3,2018-06-30,pl_negativo,pl_controladores=-1073697000
+BEEF3,2018-09-30,pl_negativo,pl_controladores=-1365753000
+BEEF3,2018-12-31,pl_negativo,pl_controladores=-301114000
+BEEF3,2019-03-31,pl_negativo,pl_controladores=-373645000
+BEEF3,2019-06-30,pl_negativo,pl_controladores=-390322000
+BEEF3,2019-09-30,pl_negativo,pl_controladores=-767223000
+BEEF3,2019-12-31,pl_negativo,pl_controladores=-281662000
+BEEF3,2024-12-31,pl_negativo,pl_controladores=-478639000
+BEEF3,2025-03-31,pl_negativo,pl_controladores=-650682000
+MOVI3,2017-03-31,quebra_estrutural,ações x0.342 e PL x1.730
+MOVI3,2017-03-31,salto_n_acoes_sem_split,ações x0.342 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MOVI3,2018-12-31,salto_n_acoes_sem_split,ações x1.234 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MOVI3,2021-09-30,salto_n_acoes_sem_split,ações x1.213 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MOVI3,2026-06-30,salto_n_acoes_sem_split,ações x1.187 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MOVI3,2017-03-31,outlier_vpa,vpa_ajustado=5.8499
+CMIG4,2018-06-30,salto_n_acoes_sem_split,ações x1.159 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CMIG4,2021-06-30,outlier_vpa,vpa_ajustado=6.9358
+USIM5,2016-09-30,salto_n_acoes_sem_split,ações x1.236 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+USIM5,2021-06-30,outlier_vpa,vpa_ajustado=16.1759
+USIM5,2025-09-30,outlier_vpa,vpa_ajustado=16.8581
+PCAR3,2013-03-31,correcao_timing_split,ações na base atual 41370 → 263988349 (do trimestre seguinte)
+PCAR3,2013-03-31,salto_n_acoes_sem_split,ações x0.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PCAR3,2013-06-30,salto_n_acoes_sem_split,ações x6381.154 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PCAR3,2024-03-31,salto_n_acoes_sem_split,ações x1.815 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PCAR3,2023-09-30,outlier_vpa,vpa_ajustado=18.5792
+PCAR3,2026-03-31,outlier_vpa,vpa_ajustado=1.3493
+CMIN3,2025-12-31,correcao_timing_split,ações na base atual 54267151083 → 5432044538 (do trimestre seguinte)
+CMIN3,2021-03-31,reescala_split_nao_registrado,ações x30.89 com PL x1.249
+CMIN3,2021-03-31,salto_n_acoes_sem_split,ações x30.891 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CMIN3,2025-12-31,salto_n_acoes_sem_split,ações x9.990 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CMIN3,2026-03-31,salto_n_acoes_sem_split,ações x0.100 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+DIRR3,2011-03-31,salto_n_acoes_sem_split,ações x1.156 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+DIRR3,2023-06-30,salto_n_acoes_sem_split,ações x1.159 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+DIRR3,2023-09-30,outlier_vpa,vpa_ajustado=3.7339
+DIRR3,2025-12-31,outlier_vpa,vpa_ajustado=3.6932
+RENT3,2022-09-30,salto_n_acoes_sem_split,ações x1.297 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RENT3,2019-03-31,outlier_vpa,vpa_ajustado=6.6164
+RENT3,2022-09-30,outlier_vpa,vpa_ajustado=20.8397
+B3SA3,2017-03-31,outlier_vpa,vpa_ajustado=3.9033
+B3SA3,2025-12-31,outlier_vpa,vpa_ajustado=3.4645
+ENEV3,2016-06-30,reescala_split_nao_registrado,ações x100 com PL x0.974
+ENEV3,2015-12-31,quebra_estrutural,ações x0.1926 e PL x2.757
+ENEV3,2013-12-31,reescala_split_nao_registrado,ações x2.522 com PL x0.900
+ENEV3,2012-06-30,salto_n_acoes_sem_split,ações x1.244 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2013-12-31,salto_n_acoes_sem_split,ações x2.522 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2014-09-30,salto_n_acoes_sem_split,ações x0.576 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2015-12-31,salto_n_acoes_sem_split,ações x0.193 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2016-06-30,salto_n_acoes_sem_split,ações x1.000 vs splits x0.010 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2016-12-31,salto_n_acoes_sem_split,ações x1.478 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2017-12-31,salto_n_acoes_sem_split,ações x1.317 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2022-06-30,salto_n_acoes_sem_split,ações x1.234 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2024-12-31,salto_n_acoes_sem_split,ações x1.220 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ENEV3,2015-12-31,outlier_vpa,vpa_ajustado=5.5434
+RADL3,2011-12-31,salto_n_acoes_sem_split,ações x1.754 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RADL3,2011-12-31,outlier_vpa,vpa_ajustado=1.2561
 AXIA3,2020-03-31,salto_n_acoes_sem_split,ações x1.160 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 AXIA3,2022-06-30,salto_n_acoes_sem_split,ações x1.400 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 AXIA3,2025-12-31,salto_n_acoes_sem_split,ações x1.263 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
 AXIA3,2016-06-30,outlier_vpa,vpa_ajustado=37.6594
 AXIA3,2018-12-31,outlier_vpa,vpa_ajustado=41.0628
+GOAU4,2015-12-31,salto_n_acoes_sem_split,ações x2.212 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GOAU4,2015-12-31,outlier_vpa,vpa_ajustado=9.8863
+WEGE3,2015-03-31,correcao_timing_split,ações na base atual 8394635995 → 4197317998 (do trimestre seguinte)
+WEGE3,2015-03-31,salto_n_acoes_sem_split,ações x2.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+WEGE3,2015-06-30,salto_n_acoes_sem_split,ações x1.000 vs splits x2.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+WEGE3,2025-12-31,outlier_vpa,vpa_ajustado=4.1512
+AURE3,2021-12-31,correcao_timing_split,ações na base atual 1985095 → 1000000000 (do trimestre seguinte)
+AURE3,2021-12-31,salto_n_acoes_sem_split,ações x0.001 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AURE3,2022-03-31,salto_n_acoes_sem_split,ações x503.754 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AURE3,2022-03-31,outlier_vpa,vpa_ajustado=12.8203
+CXSE3,2020-03-31,salto_n_acoes_sem_split,ações x0.400 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CXSE3,2020-09-30,salto_n_acoes_sem_split,ações x2.500 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CXSE3,2020-03-31,outlier_vpa,vpa_ajustado=4.4441
+CXSE3,2020-09-30,outlier_vpa,vpa_ajustado=1.5821
+PRIO3,2014-06-30,correcao_timing_split,ações na base atual 29748449 → 297484490 (do trimestre seguinte)
+PRIO3,2022-12-31,correcao_timing_split,ações na base atual 491122735 → 847012709 (do trimestre seguinte)
+PRIO3,2013-03-31,reescala_split_nao_registrado,ações x50.34 com PL x0.977
+PRIO3,2012-06-30,reescala_split_nao_registrado,ações x0.02496 com PL x0.982
+PRIO3,2012-06-30,salto_n_acoes_sem_split,ações x1.248 vs splits x50.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2013-03-31,salto_n_acoes_sem_split,ações x50.344 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2014-06-30,salto_n_acoes_sem_split,ações x0.100 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2014-09-30,salto_n_acoes_sem_split,ações x1.000 vs splits x0.100 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2016-06-30,salto_n_acoes_sem_split,ações x0.443 vs splits x0.200 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2021-03-31,salto_n_acoes_sem_split,ações x1.226 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2022-12-31,salto_n_acoes_sem_split,ações x0.582 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2023-03-31,salto_n_acoes_sem_split,ações x1.725 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PRIO3,2014-12-31,outlier_vpa,vpa_ajustado=2.0900
+PRIO3,2016-06-30,outlier_vpa,vpa_ajustado=1.1743
+QUAL3,2019-12-31,outlier_vpa,vpa_ajustado=5.0238
+QUAL3,2021-12-31,outlier_vpa,vpa_ajustado=4.5595
+MBRF3,2012-12-31,salto_n_acoes_sem_split,ações x1.816 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MBRF3,2013-03-31,salto_n_acoes_sem_split,ações x0.827 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MBRF3,2017-03-31,salto_n_acoes_sem_split,ações x1.193 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MBRF3,2023-09-30,salto_n_acoes_sem_split,ações x1.471 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MBRF3,2025-09-30,salto_n_acoes_sem_split,ações x1.712 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MBRF3,2020-03-31,pl_negativo,pl_controladores=-1030016000
+ECOR3,2021-06-30,salto_n_acoes_sem_split,ações x1.247 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ECOR3,2020-12-31,outlier_vpa,vpa_ajustado=0.1007
+ECOR3,2021-06-30,outlier_vpa,vpa_ajustado=2.8267
+EGIE3,2024-03-31,outlier_vpa,vpa_ajustado=9.4361
+RIAA3,2018-12-31,outlier_vpa,vpa_ajustado=9.8741
+TIMS3,2020-09-30,reescala_split_nao_registrado,ações x0.05723 com PL x1.033
+TIMS3,2020-09-30,salto_n_acoes_sem_split,ações x0.057 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TIMS3,2024-03-31,pl_negativo,pl_controladores=0
+TIMS3,2024-06-30,pl_negativo,pl_controladores=0
+TIMS3,2024-09-30,pl_negativo,pl_controladores=0
+TIMS3,2024-12-31,pl_negativo,pl_controladores=0
+TIMS3,2025-12-31,pl_negativo,pl_controladores=0
+VULC3,2017-12-31,quebra_estrutural,ações x0.3317 e PL x4.029
+VULC3,2016-03-31,reescala_split_nao_registrado,ações x4 com PL x0.747
+VULC3,2013-09-30,salto_n_acoes_sem_split,ações x1.190 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VULC3,2013-12-31,salto_n_acoes_sem_split,ações x2.223 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VULC3,2016-03-31,salto_n_acoes_sem_split,ações x1.000 vs splits x0.250 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VULC3,2017-12-31,salto_n_acoes_sem_split,ações x0.332 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VULC3,2025-12-31,salto_n_acoes_sem_split,ações x1.151 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+VULC3,2012-12-31,outlier_vpa,vpa_ajustado=0.0196
+VULC3,2017-12-31,outlier_vpa,vpa_ajustado=3.1914
+VULC3,2013-03-31,pl_negativo,pl_controladores=-35196000
+VULC3,2013-06-30,pl_negativo,pl_controladores=-58283000
+VULC3,2013-09-30,pl_negativo,pl_controladores=-61175000
+POSI3,2020-03-31,salto_n_acoes_sem_split,ações x1.603 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+POSI3,2011-06-30,outlier_vpa,vpa_ajustado=6.4700
+POSI3,2022-06-30,outlier_vpa,vpa_ajustado=9.1309
+SMFT3,2021-09-30,quebra_estrutural,ações x26.31 e PL x2.198
+SMFT3,2018-06-30,quebra_estrutural,ações x15.54 e PL x1.566
+SMFT3,2018-06-30,salto_n_acoes_sem_split,ações x15.539 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SMFT3,2020-03-31,salto_n_acoes_sem_split,ações x1.184 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SMFT3,2021-09-30,salto_n_acoes_sem_split,ações x26.310 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SMFT3,2018-06-30,outlier_vpa,vpa_ajustado=55.1509
+SMFT3,2021-09-30,outlier_vpa,vpa_ajustado=7.7171
+CURY3,2020-06-30,salto_n_acoes_sem_split,ações x1.281 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CURY3,2020-09-30,salto_n_acoes_sem_split,ações x2.133 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+INBR32,2022-06-30,salto_n_acoes_sem_split,ações x1.507 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+INBR32,2022-06-30,outlier_vpa,vpa_ajustado=17.5343
+ISAE4,2016-09-30,outlier_vpa,vpa_ajustado=15.2592
+CPLE3,2020-12-31,correcao_timing_split,ações na base atual 27365537500 → 2736553750 (do trimestre seguinte)
+CPLE3,2020-12-31,salto_n_acoes_sem_split,ações x10.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CPLE3,2021-03-31,salto_n_acoes_sem_split,ações x1.000 vs splits x10.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CPLE3,2022-06-30,outlier_vpa,vpa_ajustado=7.5263
+CPLE3,2025-12-31,outlier_vpa,vpa_ajustado=7.7877
+VIVA3,2019-12-31,outlier_vpa,vpa_ajustado=4.6136
+BPAC11,2021-06-30,correcao_timing_split,ações na base atual 45907942896 → 8764278252 (do trimestre seguinte)
+BPAC11,2021-06-30,salto_n_acoes_sem_split,ações x4.105 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BPAC11,2021-09-30,salto_n_acoes_sem_split,ações x0.764 vs splits x4.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BPAC11,2021-12-31,salto_n_acoes_sem_split,ações x1.313 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BPAC11,2012-06-30,outlier_vpa,vpa_ajustado=2.7925
+BPAC11,2016-12-31,outlier_vpa,vpa_ajustado=4.7384
+BPAC11,2021-06-30,outlier_vpa,vpa_ajustado=11.9954
+ASAI3,2020-09-30,correcao_timing_split,ações na base atual 1341760 → 1341760000 (do trimestre seguinte)
+ASAI3,2022-03-31,correcao_timing_split,ações na base atual 268351567 → 1347213151 (do trimestre seguinte)
+ASAI3,2020-09-30,reescala_split_nao_registrado,ações x0.08313 com PL x1.051
+ASAI3,2020-09-30,salto_n_acoes_sem_split,ações x0.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ASAI3,2020-12-31,salto_n_acoes_sem_split,ações x1000.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ASAI3,2022-03-31,salto_n_acoes_sem_split,ações x0.199 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ASAI3,2022-06-30,salto_n_acoes_sem_split,ações x5.020 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ASAI3,2020-12-31,outlier_vpa,vpa_ajustado=1.0509
+HYPE3,2011-03-31,outlier_vpa,vpa_ajustado=12.2980
+HYPE3,2012-03-31,outlier_vpa,vpa_ajustado=10.6656
+MYPK3,2017-03-31,salto_n_acoes_sem_split,ações x1.460 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+MYPK3,2015-09-30,outlier_vpa,vpa_ajustado=23.6824
+CVCB3,2020-09-30,salto_n_acoes_sem_split,ações x1.158 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CVCB3,2021-03-31,salto_n_acoes_sem_split,ações x1.164 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CVCB3,2022-06-30,salto_n_acoes_sem_split,ações x1.233 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CVCB3,2023-06-30,salto_n_acoes_sem_split,ações x1.601 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CVCB3,2023-12-31,salto_n_acoes_sem_split,ações x1.184 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CVCB3,2021-03-31,outlier_vpa,vpa_ajustado=1.7284
+CVCB3,2020-03-31,pl_negativo,pl_controladores=-180020000
+CVCB3,2020-06-30,pl_negativo,pl_controladores=-414407000
+CVCB3,2020-09-30,pl_negativo,pl_controladores=-332121000
+YDUQ3,2014-06-30,reescala_split_nao_registrado,ações x3.038 com PL x1.064
+YDUQ3,2013-06-30,reescala_split_nao_registrado,ações x0.3959 com PL x1.044
+YDUQ3,2013-06-30,salto_n_acoes_sem_split,ações x1.188 vs splits x3.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+YDUQ3,2014-06-30,salto_n_acoes_sem_split,ações x3.038 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+YDUQ3,2013-03-31,outlier_vpa,vpa_ajustado=4.6112
+RDOR3,2020-09-30,salto_n_acoes_sem_split,ações x2.038 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+RDOR3,2020-12-31,outlier_vpa,vpa_ajustado=7.0079
+JALL3,2026-06-30,reescala_split_nao_registrado,ações x10.06 com PL x0.963
+JALL3,2020-12-31,reescala_split_nao_registrado,ações x500 com PL x0.880
+JALL3,2020-12-31,salto_n_acoes_sem_split,ações x500.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+JALL3,2021-03-31,salto_n_acoes_sem_split,ações x1.292 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+JALL3,2026-06-30,salto_n_acoes_sem_split,ações x10.060 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+JALL3,2021-03-31,outlier_vpa,vpa_ajustado=0.3832
+SBSP3,2024-09-30,outlier_vpa,vpa_ajustado=10.7557
+MOTV3,2017-03-31,outlier_vpa,vpa_ajustado=4.0628
+BRSR6,2025-09-30,correcao_timing_split,ações na base atual 2244154000 → 408974000 (do trimestre seguinte)
+BRSR6,2025-09-30,salto_n_acoes_sem_split,ações x5.487 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRSR6,2025-12-31,salto_n_acoes_sem_split,ações x0.182 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BRSR6,2013-03-31,outlier_vpa,vpa_ajustado=11.6857
+CYRE3,2026-03-31,salto_n_acoes_sem_split,ações x1.190 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+CYRE3,2020-09-30,outlier_vpa,vpa_ajustado=16.2838
+CYRE3,2026-03-31,outlier_vpa,vpa_ajustado=24.3737
+BHIA3,2021-06-30,correcao_timing_split,ações na base atual 51894160 → 63885640 (do trimestre seguinte)
+BHIA3,2025-09-30,quebra_estrutural,ações x6.878 e PL x1.712
+BHIA3,2013-12-31,reescala_split_nao_registrado,ações x4 com PL x1.259
+BHIA3,2013-12-31,salto_n_acoes_sem_split,ações x4.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2020-06-30,salto_n_acoes_sem_split,ações x1.229 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2021-06-30,salto_n_acoes_sem_split,ações x0.812 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2021-09-30,salto_n_acoes_sem_split,ações x1.231 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2023-09-30,salto_n_acoes_sem_split,ações x1.491 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2025-09-30,salto_n_acoes_sem_split,ações x6.878 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2026-03-31,salto_n_acoes_sem_split,ações x1.454 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BHIA3,2020-06-30,outlier_vpa,vpa_ajustado=79.0677
+BHIA3,2025-09-30,outlier_vpa,vpa_ajustado=4.0284
+BHIA3,2026-06-30,pl_negativo,pl_controladores=-8270000000
+GMAT3,2022-06-30,correcao_timing_split,ações na base atual 22093460790 → 2209346079 (do trimestre seguinte)
+GMAT3,2023-06-30,correcao_timing_split,ações na base atual 463952163 → 2209346079 (do trimestre seguinte)
+GMAT3,2020-06-30,salto_n_acoes_sem_split,ações x2.045 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2020-12-31,salto_n_acoes_sem_split,ações x1.185 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2022-06-30,salto_n_acoes_sem_split,ações x10.000 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2022-09-30,salto_n_acoes_sem_split,ações x0.100 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2023-06-30,salto_n_acoes_sem_split,ações x0.210 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2023-09-30,salto_n_acoes_sem_split,ações x4.762 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GMAT3,2020-06-30,outlier_vpa,vpa_ajustado=1.2087
+GMAT3,2020-12-31,outlier_vpa,vpa_ajustado=2.5547
+TAEE11,2012-09-30,correcao_timing_split,ações na base atual 3100490163 → 1033496721 (do trimestre seguinte)
+TAEE11,2012-09-30,salto_n_acoes_sem_split,ações x3.922 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TAEE11,2012-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x3.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TAEE11,2012-09-30,outlier_vpa,vpa_ajustado=12.2986
+EQTL3,2012-12-31,salto_n_acoes_sem_split,ações x1.690 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+EQTL3,2011-03-31,outlier_vpa,vpa_ajustado=1.8120
+EQTL3,2011-12-31,outlier_vpa,vpa_ajustado=2.3045
+KLBN11,2020-03-31,outlier_vpa,vpa_ajustado=2.4610
+KLBN11,2021-06-30,outlier_vpa,vpa_ajustado=4.3719
+GFSA3,2026-03-31,reescala_split_nao_registrado,ações x2.576 com PL x0.998
+GFSA3,2020-03-31,reescala_split_nao_registrado,ações x2.644 com PL x0.986
+GFSA3,2018-03-31,salto_n_acoes_sem_split,ações x1.596 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2020-03-31,salto_n_acoes_sem_split,ações x2.644 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2020-09-30,salto_n_acoes_sem_split,ações x2.428 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2022-12-31,salto_n_acoes_sem_split,ações x1.350 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2023-06-30,salto_n_acoes_sem_split,ações x1.182 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2024-06-30,salto_n_acoes_sem_split,ações x1.291 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2025-03-31,salto_n_acoes_sem_split,ações x1.621 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2025-09-30,salto_n_acoes_sem_split,ações x1.659 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GFSA3,2026-03-31,salto_n_acoes_sem_split,ações x2.576 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+GRND3,2023-03-31,outlier_vpa,vpa_ajustado=3.7565
+GRND3,2025-12-31,outlier_vpa,vpa_ajustado=3.4960
+TTEN3,2022-03-31,reescala_split_nao_registrado,ações x1004 com PL x1.030
+TTEN3,2021-06-30,reescala_split_nao_registrado,ações x0.001 com PL x1.139
+TTEN3,2021-06-30,salto_n_acoes_sem_split,ações x0.001 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TTEN3,2021-09-30,salto_n_acoes_sem_split,ações x1.235 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TTEN3,2022-03-31,salto_n_acoes_sem_split,ações x1004.250 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TTEN3,2021-09-30,outlier_vpa,vpa_ajustado=4.1619
+PLPL3,2020-09-30,reescala_split_nao_registrado,ações x2.043e+04 com PL x1.476
+PLPL3,2020-09-30,salto_n_acoes_sem_split,ações x20425.600 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+PLPL3,2020-09-30,outlier_vpa,vpa_ajustado=1.0497
+AMAR3,2024-09-30,quebra_estrutural,ações x5.022 e PL x-1.123
+AMAR3,2020-03-31,salto_n_acoes_sem_split,ações x1.281 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AMAR3,2022-03-31,salto_n_acoes_sem_split,ações x1.310 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AMAR3,2024-09-30,salto_n_acoes_sem_split,ações x5.022 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AMAR3,2024-12-31,salto_n_acoes_sem_split,ações x1.453 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AMAR3,2023-12-31,outlier_vpa,vpa_ajustado=0.0068
+AMAR3,2024-03-31,pl_negativo,pl_controladores=-144137000
+AMAR3,2024-06-30,pl_negativo,pl_controladores=-248057000
+ROMI3,2022-12-31,outlier_vpa,vpa_ajustado=11.7325
+BBDC3,2019-03-31,correcao_timing_split,ações na base atual 12879548819 → 10732957349 (do trimestre seguinte)
+BBDC3,2017-03-31,salto_n_acoes_sem_split,ações x1.210 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC3,2019-03-31,salto_n_acoes_sem_split,ações x1.200 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC3,2019-06-30,salto_n_acoes_sem_split,ações x1.000 vs splits x1.200 (emissão/recompra/cancelamento ou split ausente no yfinance)
+BBDC3,2017-03-31,outlier_vpa,vpa_ajustado=8.8562
+SANB11,2014-06-30,reescala_split_nao_registrado,ações x0.01905 com PL x1.022
+SANB11,2014-06-30,salto_n_acoes_sem_split,ações x0.019 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+SANB11,2014-03-31,outlier_vpa,vpa_ajustado=20.1643

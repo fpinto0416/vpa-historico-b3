@@ -3,7 +3,7 @@
 Fonte primária: tabela `valor_mobiliario` do FCA (todos os anos desde 2010),
 que traz o código de negociação junto com o CNPJ do emissor. Como o FCA mais
 antigo costuma vir sem ticker, a busca usa a união de todos os anos. Quando o
-histórico atravessa CNPJs (reorganizações), `config.CNPJ_MANUAL` prevalece.
+histórico atravessa CNPJs (reorganizações), `config.MAPA_MANUAL` prevalece.
 
 Saída: `data/processed/mapeamento_tickers.csv`, versionada para auditoria.
 """
@@ -25,7 +25,8 @@ def fator_unit(composicao: str | None) -> float:
     """'1 ON / 2 PN' → 3 ações por unit. Sem composição → 1."""
     if not isinstance(composicao, str):
         return 1.0
-    numeros = [int(n) for n in re.findall(r"(\d+)\s*(?:ON|PN|A[ÇC][ÃA]O|A[ÇC][ÕO]ES)", composicao.upper())]
+    padrao = r"(\d+)\s*(?:ON|PN[A-Z]?|A[ÇC][ÃA]O|A[ÇC][ÕO]ES|[A-Z]{4}\d{1,2}\b)"
+    numeros = [int(n) for n in re.findall(padrao, composicao.upper())]
     return float(sum(numeros)) if numeros else 1.0
 
 
@@ -39,9 +40,9 @@ def mapear(tickers: list[str]) -> pd.DataFrame:
     linhas = []
     for t in tickers:
         reg = vm[vm["Codigo_Negociacao"] == t]
-        manual = config.CNPJ_MANUAL.get(t)
+        manual = config.MAPA_MANUAL.get(t)
         if manual:
-            cnpjs = [c for c, _, _ in manual]
+            cnpjs = list(dict.fromkeys(c for c, _, _ in manual["cnpjs"]))
             metodo = "manual"
         elif not reg.empty:
             # CNPJ mais recente que usou o ticker; os demais ficam registrados.
@@ -57,6 +58,9 @@ def mapear(tickers: list[str]) -> pd.DataFrame:
             continue
 
         ult = reg.sort_values("ano_fca").iloc[-1] if not reg.empty else None
+        fu = fator_unit(ult["Composicao_BDR_Unit"]) if ult is not None else 1.0
+        if manual and "fator_unit" in manual:
+            fu = manual["fator_unit"]
         for cnpj in cnpjs:
             info = cad.loc[cnpj] if cnpj in cad.index else None
             anos = vm.loc[(vm["Codigo_Negociacao"] == t) & (vm["CNPJ_Companhia"] == cnpj), "ano_fca"]
@@ -68,10 +72,11 @@ def mapear(tickers: list[str]) -> pd.DataFrame:
                 "situacao_cvm": info["SIT"] if info is not None else None,
                 "valor_mobiliario": ult["Valor_Mobiliario"] if ult is not None else None,
                 "composicao_unit": ult["Composicao_BDR_Unit"] if ult is not None else None,
-                "fator_unit": fator_unit(ult["Composicao_BDR_Unit"]) if ult is not None else 1.0,
+                "fator_unit": fu,
                 "fca_ano_min": anos.min() if len(anos) else None,
                 "fca_ano_max": anos.max() if len(anos) else None,
                 "metodo": metodo,
+                "obs": manual.get("obs") if manual else None,
                 "status": "ok",
             })
     mapa = pd.DataFrame(linhas)

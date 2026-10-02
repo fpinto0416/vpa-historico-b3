@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import datetime as dt
 import time
+import zipfile
 
 import httpx
 import pandas as pd
@@ -55,9 +56,54 @@ def baixar_ativo(ticker: str, forcar: bool = False) -> pd.DataFrame:
     })
     df = df[df.index >= DATA_INI].dropna(subset=["close"])
     df = df[df["close"] > 0]
+    for codigo, de, ate in config.REMENDO_PRECOS.get(ticker, []):
+        df = _remendar(df, ticker, codigo, pd.Timestamp(de), pd.Timestamp(ate))
     config.DIR_RAW_PRECOS.mkdir(parents=True, exist_ok=True)
     df.to_parquet(destino)
     log(LOG, "preços baixados", ticker=ticker, n=len(df), ini=df.index.min().date())
+    return df
+
+
+def cotahist(codigos: set[str], anos: range) -> pd.DataFrame:
+    """Fechamentos do mercado à vista (lote padrão) no COTAHIST, layout posicional da B3."""
+    linhas = []
+    for ano in anos:
+        arq = next(iter(config.DIR_COTAHIST.glob(f"COTAHIST_A{ano}.[zZ][iI][pP]")), None)
+        if arq is None:
+            raise FileNotFoundError(f"COTAHIST {ano} não encontrado em {config.DIR_COTAHIST}")
+        with zipfile.ZipFile(arq) as z:
+            for bruta in z.open(z.namelist()[0]):
+                linha = bruta.decode("latin1")
+                if linha[:2] == "01" and linha[24:27] == "010" and linha[12:24].strip() in codigos:
+                    linhas.append((linha[2:10], linha[12:24].strip(), int(linha[108:121]) / 100,
+                                   int(linha[170:188]) / 100))
+    df = pd.DataFrame(linhas, columns=["data", "codigo", "close", "volume_fin"])
+    df["data"] = pd.to_datetime(df["data"])
+    return df
+
+
+def _remendar(df: pd.DataFrame, ticker: str, codigo: str, de: pd.Timestamp, ate: pd.Timestamp) -> pd.DataFrame:
+    """Preenche [de, ate] com o fechamento de `codigo` no COTAHIST.
+
+    O nível é alinhado ao `close` do yfinance pelo último pregão anterior à
+    lacuna (fator = splits posteriores); o `adj_close` é reconstruído pelos
+    retornos (proventos dentro da lacuna ficam de fora — limitação registrada).
+    """
+    cot = cotahist({codigo, ticker}, range(de.year - (1 if de.month == 1 else 0), ate.year + 1))
+    antes = df.index[df.index < de].max()
+    ref = cot[(cot["codigo"] == ticker) & (cot["data"] == antes)]
+    k = float(df.at[antes, "close"] / ref["close"].iloc[0]) if len(ref) else 1.0
+    gap = cot[(cot["codigo"] == codigo) & cot["data"].between(de, ate)].set_index("data")
+    novo = pd.DataFrame({"close": gap["close"] * k, "volume": gap["volume_fin"], "split": 1.0})
+    df = pd.concat([df[df.index < de], novo, df[df.index > ate]]).sort_index()
+    df = df[~df.index.duplicated(keep="first")]
+    ret = df["adj_close"].pct_change()
+    ret.loc[novo.index] = df["close"].pct_change().loc[novo.index]
+    primeiro_pos = df.index[df.index > ate]
+    if len(primeiro_pos):
+        ret.loc[primeiro_pos[0]] = df.at[primeiro_pos[0], "close"] / df.at[novo.index[-1], "close"] - 1
+    df["adj_close"] = df["adj_close"].iloc[0] * (1 + ret.fillna(0)).cumprod()
+    log(LOG, "lacuna emendada com COTAHIST", ticker=ticker, codigo=codigo, pregoes=len(novo), fator=round(k, 4))
     return df
 
 

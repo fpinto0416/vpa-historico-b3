@@ -148,18 +148,14 @@ def vpa_ticker(linha_mapa: pd.Series | pd.DataFrame, auditoria: list[dict]) -> p
     df = df[df["ref_date"].dt.year >= config.ANO_PISO].sort_values("ref_date").reset_index(drop=True)
 
     # Recortes manuais de CNPJ por período (reorganizações societárias).
-    for cnpj, de, ate in config.CNPJ_MANUAL.get(ticker, []):
-        fora = (df["CNPJ_CIA"] == cnpj) & (
-            (df["ref_date"] < pd.Timestamp(de) if de else False)
-            | (df["ref_date"] > pd.Timestamp(ate) if ate else False))
-        df = df[~fora]
-
-    ausente = df["n_acoes"].isna()
-    df["n_acoes"] = df["n_acoes"].ffill()
-    df.loc[ausente & df["n_acoes"].notna(), "n_acoes_fonte"] = "ffill"
-    for _, r in df[df["n_acoes_fonte"] == "ffill"].iterrows():
-        auditoria.append({"ticker": ticker, "ref_date": r["ref_date"], "evento": "n_acoes_ausente",
-                          "detalhe": "nº de ações herdado do trimestre anterior"})
+    janelas = config.MAPA_MANUAL.get(ticker, {}).get("cnpjs", [])
+    if janelas:
+        dentro = pd.Series(False, index=df.index)
+        for cnpj, de, ate in janelas:
+            dentro |= ((df["CNPJ_CIA"] == cnpj)
+                       & (df["ref_date"] >= pd.Timestamp(de or "1900-01-01"))
+                       & (df["ref_date"] <= pd.Timestamp(ate or "2100-01-01")))
+        df = df[dentro].reset_index(drop=True)
 
     df["receipt_date"] = df["DT_RECEB"]
     sem_receb = df["receipt_date"].isna()
@@ -170,9 +166,18 @@ def vpa_ticker(linha_mapa: pd.Series | pd.DataFrame, auditoria: list[dict]) -> p
     df["avail_date"] = pd.concat(
         [df["receipt_date"], df["ref_date"] + pd.DateOffset(months=3)], axis=1).max(axis=1)
 
-    df["vpa"] = df["pl_controladores"] / df["n_acoes"]
     px = precos.baixar_ativo(ticker)
     df["fator_split_posterior"] = precos.fator_split_apos(px, df["ref_date"]).values
+    # Nº de ações ausente: herda o do trimestre anterior já na base de splits
+    # (inclusive quando o histórico troca de CNPJ, como NATU3 em 2019).
+    ausente = df["n_acoes"].isna()
+    base = (df["n_acoes"] * df["fator_split_posterior"]).ffill()
+    df["n_acoes"] = df["n_acoes"].fillna(base / df["fator_split_posterior"])
+    df.loc[ausente & df["n_acoes"].notna(), "n_acoes_fonte"] = "ffill"
+    for _, r in df[df["n_acoes_fonte"] == "ffill"].iterrows():
+        auditoria.append({"ticker": ticker, "ref_date": r["ref_date"], "evento": "n_acoes_ausente",
+                          "detalhe": "nº de ações herdado do trimestre anterior"})
+    df["vpa"] = df["pl_controladores"] / df["n_acoes"]
     df["fator_unit"] = fator_unit
     # Ações na base atual (splits posteriores aplicados). Um pico que reverte no
     # trimestre seguinte é split/grupamento registrado na CVM antes da data-ex
@@ -188,6 +193,27 @@ def vpa_ticker(linha_mapa: pd.Series | pd.DataFrame, auditoria: list[dict]) -> p
                           "detalhe": f"ações na base atual {acoes_base_atual[i]:.0f} → "
                                      f"{acoes_base_atual[i + 1]:.0f} (do trimestre seguinte)"})
         acoes_base_atual[i] = acoes_base_atual[i + 1]
+
+    # Mudança de patamar no nº de ações (> 2,5x) com PL estável (< 1,5x) é split,
+    # grupamento ou escala que nem o FRE nem o yfinance registraram (ou contagem
+    # pré-IPO): o histórico anterior é reescalado para a base mais recente.
+    # Com o PL mudando junto é quebra estrutural (fusão, incorporação): fica
+    # marcada e a janela expandida do P/VPA recomeça ali (ver estrategia.py).
+    df["flag_quebra_estrutural"] = False
+    for i in range(len(df) - 1, 0, -1):
+        r_acoes = acoes_base_atual[i] / acoes_base_atual[i - 1]
+        with np.errstate(divide="ignore", invalid="ignore"):
+            r_pl = df.at[i, "pl_controladores"] / df.at[i - 1, "pl_controladores"]
+        if not np.isfinite(r_acoes) or abs(np.log(r_acoes)) <= np.log(2.5):
+            continue
+        if r_pl > 0 and abs(np.log(r_pl)) < np.log(1.5):
+            acoes_base_atual[:i] = acoes_base_atual[:i] * r_acoes
+            evento, detalhe = "reescala_split_nao_registrado", f"ações x{r_acoes:.4g} com PL x{r_pl:.3f}"
+        else:
+            df.at[i, "flag_quebra_estrutural"] = True
+            evento, detalhe = "quebra_estrutural", f"ações x{r_acoes:.4g} e PL x{r_pl:.3f}"
+        auditoria.append({"ticker": ticker, "ref_date": df.at[i, "ref_date"], "evento": evento,
+                          "detalhe": detalhe})
     df["vpa_ajustado"] = df["pl_controladores"] * fator_unit / acoes_base_atual
     df["flag_pl_negativo"] = df["pl_controladores"] <= 0
     df["flag_outlier"] = _flag_outliers(df)
@@ -213,7 +239,8 @@ def vpa_ticker(linha_mapa: pd.Series | pd.DataFrame, auditoria: list[dict]) -> p
     df["cod_cvm"] = df["CD_CVM"].fillna(mapa["cod_cvm"].iloc[0]).astype(str).str.zfill(6)
     df["fonte"] = "CVM dados abertos " + df["tipo_doc"] + " v" + df["VERSAO"].astype(str)
     extras = ["cnpj", "pl_controladores", "pl_minoritarios", "vpa_ajustado", "fator_unit",
-              "fator_split_posterior", "flag_pl_negativo", "n_acoes_fonte", "receipt_date_v1"]
+              "fator_split_posterior", "flag_pl_negativo", "flag_quebra_estrutural", "n_acoes_fonte",
+              "receipt_date_v1"]
     return df[COLUNAS + extras]
 
 
@@ -222,12 +249,17 @@ def pvpa_diario(vpa: pd.DataFrame, px: pd.DataFrame) -> pd.DataFrame:
 
     Em cada dia vale o balanço de ref_date mais recente já disponível; um
     documento antigo reapresentado depois de um mais novo não volta a valer.
-    `n_trim` = nº de trimestres disponíveis até o dia (aquecimento).
+    `regime` incrementa a cada quebra estrutural já disponível no dia.
     """
-    v = vpa.sort_values(["avail_date", "ref_date"]).copy()
-    v["n_trim"] = np.arange(1, len(v) + 1)
+    v = vpa.sort_values("ref_date").copy()
+    if "flag_quebra_estrutural" not in v:
+        v["flag_quebra_estrutural"] = False
+    # Regime numerado na ordem do balanço, antes de descartar reapresentações
+    # atrasadas: a quebra vale mesmo que o trimestre dela nunca chegue a ser usado.
+    v["regime"] = v["flag_quebra_estrutural"].astype(int).cumsum()
+    v = v.sort_values(["avail_date", "ref_date"])
     v = v[v["ref_date"] > v["ref_date"].cummax().shift().fillna(pd.Timestamp.min)]
-    eventos = v[["avail_date", "ref_date", "vpa_ajustado", "n_trim", "flag_pl_negativo"]].astype(
+    eventos = v[["avail_date", "ref_date", "vpa_ajustado", "flag_pl_negativo", "regime"]].astype(
         {"avail_date": "datetime64[ns]"})
     base = px[["close", "adj_close"]].reset_index(names="data").sort_values("data")
     base["data"] = base["data"].astype("datetime64[ns]")
