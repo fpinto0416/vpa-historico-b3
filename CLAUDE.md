@@ -87,11 +87,22 @@ Saídas: `data/processed/vpa_trimestral.{parquet,csv}` (fora do git; só `amostr
 - Filtrar pregões com volume 0 (preço repetido); retry com pausa de 15 s.
 - Ele reescreve o histórico ajustado a cada provento → nunca usar `adj_close` em nível.
 
-## Status / próximos passos
+## Achados da rodada de 02/10/2026 (ver relatório para números atuais)
 
-- [x] Extração CVM, mapeamento, VPA dos 88 tickers
-- [ ] Revisar NATU3 (mediana de P/VPA 24 — suspeita no trecho pré-2019) e ENEV3 (máx 619)
-- [ ] `estrategia.py` (motor de slots) + testes
-- [ ] `backtest.py` (benchmarks B&H por ativo, EW, IBOV, CDI; métricas; bootstrap; top-5 fora)
-- [ ] `relatorio.py` (HTML + PDF via playwright) + notebook exploratório
-- [ ] README final com limitações; publicar artefato e entregar o link
+- Estratégia 11,45% a.a. vs B&H EW 10,88% vs mix mesma exposição 11,27% vs CDI 9,78%.
+  Contra o mix (o teste de timing): +0,19 p.p., IC [−3,5; +4,0] → **sem edge de retorno**;
+  ganho real é drawdown (−20% vs −33% mix vs −49% B&H). DSR 0,60. Caixa a 0% → perde do B&H.
+- 15 ativos compram no 1º sinal e nunca vendem (utilities/bancos ficam 8–13 anos comprados).
+- O benchmark "mix mesma exposição" foi adicionado por nós (não estava no prompt): sem ele, o ganho
+  do caixa em CDI parece timing.
+
+## Status
+
+- [x] Extração CVM, mapeamento (88), VPA, emenda NATU3 via COTAHIST
+- [x] `estrategia.py` + `backtest.py` (benchmarks, bootstrap em blocos, DSR, top-5 fora, sensibilidade)
+- [x] `relatorio.py` → `reports/relatorio_vpa.{html,pdf}`; template em `src/vpa_b3/_template_relatorio.html`
+  (SVG próprio, sem libs). Artefato: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu — para atualizar,
+  rodar o pipeline e publicar `data/processed/relatorio_vpa_artefato.html` com esse `url`.
+- [x] Notebook exploratório, README com limitações
+- [ ] Próximos (sugeridos): composição histórica do IBrA (survivorship), PETZ3→AUAU3 com relação de troca,
+  sinal P/VPA condicionado a ROE.

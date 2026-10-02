@@ -296,9 +296,20 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
         .sort_values(ascending=False),
     }
 
+    # Mix estático com a mesma exposição média da estratégia (EW + CDI, rebalanceado
+    # diariamente): separa o ganho de timing do simples efeito de ficar parte em caixa.
+    elig = pd.DataFrame({t: principal["valor"].index >= a["elegivel_desde"] for t, a in dados["ativos"].items()},
+                        index=principal["valor"].index)
+    exposicao = float(principal["comprado"].where(elig).stack().mean())
+    # Por slot: antes de elegível, CDI (igual ao B&H); depois, exposição·ativo + resto·CDI.
+    r_bh = principal["bh"].pct_change().fillna(0)
+    r_cdi = pd.DataFrame({t: cdi - 1 for t in r_bh.columns})
+    r_slot = r_cdi.where(~elig, exposicao * r_bh + (1 - exposicao) * r_cdi)
+    mix = (1 + r_slot).cumprod() * principal["bh"].iloc[0]
     curvas = pd.DataFrame({
         "estrategia": agg,
         "bh_equal_weight": principal["bh"].sum(axis=1),
+        "mix_mesma_exposicao": mix.sum(axis=1),
         "ibov": p.capital_inicial * dados["ibov"] / dados["ibov"].iloc[0],
         "cdi": p.capital_inicial * cdi.cumprod() / cdi.iloc[0],
     })
@@ -306,6 +317,10 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
                                                    else None) for k, v in curvas.items()}).T
 
     rt = round_trips(principal["trades"], principal["valor"])
+    _, mix_lo, mix_hi = bootstrap_dif_cagr(agg, curvas["mix_mesma_exposicao"], np.random.default_rng(SEMENTE))
+    agregado.update({"exposicao_media": exposicao,
+                     "dif_cagr_vs_mix": cagr(agg) - cagr(curvas["mix_mesma_exposicao"]),
+                     "mix_ic_lo": mix_lo, "mix_ic_hi": mix_hi})
     resultados = {
         "params": p, "dados_status": dados["status"], "curvas": curvas, "metricas_agregadas": metricas_agregadas,
         "por_ativo": por_ativo, "agregado_bootstrap": agregado, "dsr": dsr, "sensibilidade": sens,

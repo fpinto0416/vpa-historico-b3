@@ -1,0 +1,665 @@
+<title>Rotação por P/VPA na B3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@500;600;700&display=swap">
+<style>
+/* Layout: relatório de pesquisa em coluna única (~1100px), seções numeradas como um
+   parecer; números sempre em mono, figuras em superfícies separadas do fundo. */
+:root {
+  --bg: #f3f5f6;
+  --surface: #fcfcfb;
+  --ink: #0f1a24;
+  --ink-2: #47525c;
+  --muted: #78838d;
+  --rule: #dce1e5;
+  --axis: #c3c9ce;
+  --accent: #0f766e;
+  --accent-soft: #dff1ee;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --pos: #2a78d6; --neg: #e34948; --zero: #b9bec3;
+  --heat-0: #e8edf2; --heat-1: #1c5cab; --na: transparent;
+  --d-con: #2a78d6; --d-ind: #1baf7a; --d-neg: #d03b3b; --d-quebra: #eda100;
+  --good: #006300; --bad: #b42323;
+  --f-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
+    --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
+    --heat-0: #1d2830; --heat-1: #6da7ec;
+    --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
+    --good: #0ca30c; --bad: #f07a7a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
+  --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
+  --heat-0: #1d2830; --heat-1: #6da7ec;
+  --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
+  --good: #0ca30c; --bad: #f07a7a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--f-body); margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 80px; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(28px, 4.2vw, 44px); line-height: 1.1; font-weight: 700; }
+h2 { font-size: 22px; font-weight: 600; display: flex; gap: 12px; align-items: baseline; }
+h2 .n { font-family: var(--f-mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+h3 { font-size: 15px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.mono, td.num, .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.muted { color: var(--muted); }
+.ink2 { color: var(--ink-2); }
+section { display: grid; gap: 20px; min-width: 0; }
+.lede { display: grid; gap: 16px; }
+.lede p { font-size: 17px; color: var(--ink-2); }
+.formula { font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; overflow-x: auto; white-space: nowrap; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 24px; font: 13px var(--f-mono); color: var(--muted); }
+.meta b { color: var(--ink); font-weight: 500; }
+
+/* Veredicto */
+.verdict { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 24px;
+  display: grid; gap: 20px; }
+.verdict .answer { font-family: var(--f-display); font-size: clamp(19px, 2.4vw, 24px); font-weight: 600; line-height: 1.3; max-width: 60ch; }
+.verdict ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 75ch; color: var(--ink-2); }
+.verdict li b { color: var(--ink); font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--rule);
+  border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.tile { background: var(--surface); padding: 14px 16px; display: grid; gap: 4px; min-width: 0; }
+.tile .k { font-size: 12px; color: var(--muted); }
+.tile .v { font: 600 24px/1.1 var(--f-mono); }
+.tile .s { font: 12px var(--f-mono); color: var(--ink-2); }
+.tile.main .v { color: var(--accent); }
+
+/* Figuras */
+figure { margin: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 18px 12px;
+  display: grid; gap: 10px; min-width: 0; break-inside: avoid; }
+figcaption { font-size: 13px; color: var(--muted); max-width: 80ch; }
+.fig-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: baseline; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.legend i.box { height: 10px; width: 10px; border-radius: 2px; }
+.legend i.dash { background: repeating-linear-gradient(90deg, var(--muted) 0 4px, transparent 4px 7px) !important; }
+.chart { width: 100%; min-width: 0; position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--f-mono); font-size: 11px; fill: var(--muted); }
+.chart .lbl { fill: var(--ink-2); font-size: 11px; }
+.scroll { overflow-x: auto; min-width: 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+
+/* Tabelas */
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font: 500 11px/1.3 var(--f-mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted);
+  padding: 8px 10px; border-bottom: 1px solid var(--axis); white-space: nowrap; vertical-align: bottom; }
+th.num, td.num { text-align: right; }
+td { padding: 7px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+tr.hl td { background: var(--accent-soft); }
+td.t { font-family: var(--f-mono); font-weight: 600; }
+.pos { color: var(--good); } .neg { color: var(--bad); }
+.chip { font: 500 11px/1 var(--f-mono); padding: 3px 7px; border-radius: 99px; border: 1px solid var(--rule); color: var(--ink-2);
+  display: inline-block; white-space: nowrap; }
+.chip.warn { border-color: var(--d-quebra); }
+.chip.hold { border-color: var(--axis); background: var(--bg); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ci { display: inline-block; width: 90px; height: 10px; position: relative; vertical-align: middle; }
+.ci b { position: absolute; top: 4px; height: 2px; background: var(--ink-2); border-radius: 1px; }
+.ci i { position: absolute; top: 1px; width: 8px; height: 8px; border-radius: 50%; margin-left: -4px; }
+.ci u { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--axis); }
+details { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 16px; }
+details summary { cursor: pointer; font-weight: 500; }
+details summary:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details[open] summary { margin-bottom: 12px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px 32px; }
+.cols p, .note { font-size: 14px; color: var(--ink-2); }
+.note b { color: var(--ink); }
+.sens td.cell { text-align: right; font-family: var(--f-mono); }
+.sens td.cell span { display: inline-block; min-width: 64px; padding: 2px 6px; border-radius: 4px; }
+.tag-main { font: 500 10px var(--f-mono); color: var(--accent); margin-left: 4px; }
+.lim { display: grid; gap: 10px; padding-left: 20px; margin: 0; color: var(--ink-2); max-width: 80ch; }
+.lim b { color: var(--ink); }
+#tip { position: fixed; pointer-events: none; z-index: 10; background: var(--ink); color: var(--bg); font: 12px/1.45 var(--f-mono);
+  padding: 8px 10px; border-radius: 6px; max-width: 280px; box-shadow: 0 4px 16px rgb(0 0 0 / 0.18); }
+#tip .r { display: flex; justify-content: space-between; gap: 14px; }
+#tip .sw { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+footer { font-size: 12px; color: var(--muted); display: grid; gap: 4px; }
+a { color: var(--accent); }
+@media (max-width: 560px) { .wrap { gap: 44px; padding-block: 28px 60px; } .verdict { padding: 18px; } figure { padding: 14px 12px 10px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media print {
+  body { background: #fff; font-size: 12px; }
+  .wrap { max-width: none; padding: 0; gap: 28px; }
+  .verdict, .tiles, tr, .grid2 > figure { break-inside: avoid-page; }
+  h2, h3 { break-after: avoid-page; }
+  details { display: none; }
+  .print-only { display: block !important; }
+  #tip { display: none; }
+  .scroll { overflow: visible; }
+  .scroll svg { width: 100% !important; height: auto; }
+  #ch-dots svg, #ch-disp svg, #ch-pos svg { width: auto !important; max-width: 100%; max-height: 225mm; margin-inline: auto; }
+}
+</style>
+
+<div class="wrap" id="app">
+  <header class="lede">
+    <div class="eyebrow">Backtest · dados abertos CVM · B3</div>
+    <h1>Comprar abaixo do P/VPA médio e vender no esticado: funciona?</h1>
+    <p>Para cada ação, o P/VPA de hoje é comparado só com a história do próprio papel. Compra quando está abaixo da média
+      histórica expandida; vende quando passa da média mais dois desvios. Um slot por ativo, caixa rendendo CDI, balanços
+      usados apenas depois da data em que o investidor poderia tê-los lido.</p>
+    <div class="formula">P/VPA(t) = fechamento(t) ÷ [ PL dos controladores ÷ (ações − tesouraria) ] do balanço mais recente com avail_date ≤ t &nbsp;·&nbsp; avail_date = max(entrega à CVM, ref_date + 3 meses)</div>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1"><span class="n">01</span>Resumo executivo</h2>
+    <div class="verdict">
+      <div class="answer" id="answer"></div>
+      <div class="tiles" id="tiles"></div>
+      <ul id="bullets"></ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2"><span class="n">02</span>Curva de capital e drawdown</h2>
+    <figure>
+      <div class="fig-head"><h3>Patrimônio da carteira (R$ milhões)</h3><div class="legend" id="leg-curva"></div></div>
+      <div class="chart" id="ch-curva"></div>
+      <figcaption>Todos começam com o mesmo capital no primeiro dia em que algum ativo fica elegível. Slots de ativos ainda em aquecimento ficam no CDI, nas duas carteiras. O "mix" tem a mesma exposição média da estratégia, fixa, sem timing.</figcaption>
+    </figure>
+    <figure>
+      <div class="fig-head"><h3>Drawdown</h3><div class="legend" id="leg-dd"></div></div>
+      <div class="chart" id="ch-dd"></div>
+    </figure>
+    <figure>
+      <h3>Métricas agregadas</h3>
+      <div class="scroll"><table id="tb-agg"></table></div>
+      <figcaption>Sharpe e Sortino sobre o CDI. IC de 95% por bootstrap estacionário em blocos (média de 63 pregões, 1.000 reamostras), dias pareados entre a estratégia e o benchmark.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3"><span class="n">03</span>Ativo por ativo</h2>
+    <p class="ink2" id="txt-ativos"></p>
+    <figure>
+      <div class="fig-head"><h3>Diferença de CAGR contra o buy &amp; hold do próprio ativo, com IC de 95%</h3>
+        <div class="legend"><span><i class="box" style="background:var(--pos)"></i>estratégia melhor</span><span><i class="box" style="background:var(--neg)"></i>pior</span><span><i class="box" style="background:var(--zero)"></i>idêntica (nunca vendeu)</span></div></div>
+      <div class="chart" id="ch-dots"></div>
+      <figcaption>Cada linha é um ativo, desde a data em que ficou elegível. A barra é o intervalo de confiança do bootstrap em blocos; quando cruza o zero, a diferença não se distingue de sorte.</figcaption>
+    </figure>
+    <div class="grid2">
+      <figure><h3>Top 10</h3><div class="scroll"><table id="tb-top"></table></div></figure>
+      <figure><h3>Bottom 10</h3><div class="scroll"><table id="tb-bot"></table></div></figure>
+    </div>
+    <p class="note print-only" style="display:none">Tabela completa por ativo (Sharpe, drawdown, turnover, acerto, maiores sequências) em <span class="mono">reports/metricas_por_ativo.csv</span> no repositório.</p>
+    <details>
+      <summary>Tabela completa dos <span id="n-ativos"></span> ativos</summary>
+      <div class="scroll"><table id="tb-all"></table></div>
+    </details>
+  </section>
+
+  <section aria-labelledby="s4">
+    <h2 id="s4"><span class="n">04</span>De onde vem o resultado</h2>
+    <div class="grid2">
+      <figure>
+        <h3>Concentração do alpha</h3>
+        <div class="chart" id="ch-contrib"></div>
+        <figcaption id="cap-contrib"></figcaption>
+      </figure>
+      <figure>
+        <h3>Tempo comprado por ativo</h3>
+        <div class="chart" id="ch-hist"></div>
+        <figcaption>Fração dos pregões comprados desde a elegibilidade. A pilha à direita são ativos que compraram cedo e nunca chegaram ao gatilho de venda.</figcaption>
+      </figure>
+    </div>
+    <figure>
+      <h3>Ativos que nunca venderam</h3>
+      <div class="chips" id="chips-hold"></div>
+      <figcaption id="cap-hold"></figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="s5">
+    <h2 id="s5"><span class="n">05</span>Sensibilidade</h2>
+    <p class="ink2">A grade inteira é mostrada, sem escolher a melhor célula. Cada número é a diferença de CAGR da carteira contra o buy &amp; hold equal-weight com o mesmo custo; a linha marcada é a configuração principal.</p>
+    <figure>
+      <div class="scroll"><table class="sens" id="tb-sens"></table></div>
+      <figcaption id="cap-sens"></figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="s6">
+    <h2 id="s6"><span class="n">06</span>Posições ao longo do tempo</h2>
+    <figure>
+      <div class="fig-head"><h3>Fração do mês comprado, por ativo</h3>
+        <div class="legend"><span><i class="box" style="background:var(--heat-0)"></i>caixa</span><span><i class="box" style="background:var(--heat-1)"></i>comprado</span><span><i class="box" style="background:var(--bg);outline:1px solid var(--rule)"></i>aquecimento</span></div></div>
+      <div class="scroll"><div class="chart" id="ch-pos"></div></div>
+      <figcaption>Ativos ordenados pela data em que ficaram elegíveis. Faixas longas e contínuas de azul são posições de buy &amp; hold disfarçadas.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="s7">
+    <h2 id="s7"><span class="n">07</span>Disponibilidade dos dados</h2>
+    <figure>
+      <div class="fig-head"><h3>Balanços por ativo e trimestre de referência</h3>
+        <div class="legend"><span><i class="box" style="background:var(--d-con)"></i>consolidado</span><span><i class="box" style="background:var(--d-ind)"></i>individual</span><span><i class="box" style="background:var(--d-neg)"></i>PL ≤ 0</span><span><i class="box" style="background:var(--d-quebra)"></i>quebra estrutural</span></div></div>
+      <div class="scroll"><div class="chart" id="ch-disp"></div></div>
+      <figcaption>DFP desde 2010, ITR desde 2011. Bancos alternam consolidado (DFP) e individual (ITR). Em quebra estrutural (fusão, incorporação) a janela do P/VPA recomeça e o ativo cumpre novo aquecimento.</figcaption>
+    </figure>
+    <figure id="fig-excl">
+      <h3>Fora do backtest</h3>
+      <div class="scroll"><table id="tb-excl"></table></div>
+    </figure>
+  </section>
+
+  <section aria-labelledby="s8">
+    <h2 id="s8"><span class="n">08</span>Limitações e próximos passos</h2>
+    <ol class="lim">
+      <li><b>Survivorship bias.</b> A lista é a de hoje. Empresas que quebraram ou saíram da bolsa entre 2013 e 2026 não entram, o que favorece qualquer estratégia que compra o "barato".</li>
+      <li><b>Histórico curto.</b> Os dados abertos da CVM começam em 2010 (DFP) e 2011 (ITR). Com o aquecimento de 8 trimestres o backtest começa em 2013, e vários ativos só ficam elegíveis depois de 2020.</li>
+      <li><b>Nº de ações antes de 2020.</b> Vem dos eventos de capital do Formulário de Referência, sem descontar tesouraria. Splits que a CVM e o yfinance registram em datas diferentes foram corrigidos por regra e estão em <span class="mono">reports/auditoria_vpa.csv</span>.</li>
+      <li><b>Preço e proventos.</b> O sinal usa o fechamento ajustado só por split; o retorno usa o preço ajustado por proventos do yfinance, então dividendos estão no preço e não no caixa. Frações de ação são permitidas.</li>
+      <li><b>P/VPA só se compara com a própria história.</b> Nunca entre setores. Bancos, utilities e varejo têm níveis estruturalmente diferentes.</li>
+      <li><b>Custos.</b> 0,1% por operação pode subestimar o slippage em papéis ilíquidos (POMO4, AXIA3, EMBJ3, RIAA3, ROMI3). A grade com 0,5% está na seção 05.</li>
+      <li><b>Teste múltiplo.</b> A grade tem 37 variantes. O Deflated Sharpe da configuração principal desconta isso.</li>
+    </ol>
+    <div class="cols">
+      <p><b>Próximos passos.</b> Remontar a lista com a composição histórica do IBrA para tirar o survivorship; emendar PETZ3 → AUAU3 com a relação de troca; testar o sinal em z-score do P/VPA contra ROE (o desconto de um banco com ROE caindo não é o mesmo de um banco com ROE estável).</p>
+      <p><b>Reprodução.</b> <span class="mono">pip install -e ".[dev,pdf]" &amp;&amp; python -m vpa_b3</span>. Código e decisões em <a href="https://github.com/fpinto0416/vpa-historico-b3">github.com/fpinto0416/vpa-historico-b3</a>.</p>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const D = /*__DADOS__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const nf = (c) => new Intl.NumberFormat("pt-BR", { minimumFractionDigits: c, maximumFractionDigits: c });
+const pct = (x, c = 1) => x == null ? "—" : nf(c).format(x * 100) + "%";
+const pp = (x, c = 1) => x == null ? "—" : (x > 0 ? "+" : "") + nf(c).format(x * 100) + " p.p.";
+const num = (x, c = 2) => x == null ? "—" : nf(c).format(x);
+const mi = (x) => nf(2).format(x / 1e6);
+const sgn = (x) => x == null ? "" : x > 0.00005 ? "pos" : x < -0.00005 ? "neg" : "";
+const el = (tag, attrs = {}, parent) => {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* ---------- tooltip ---------- */
+const tip = $("tip");
+function showTip(ev, html) {
+  tip.innerHTML = html; tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+
+/* ---------- escalas ---------- */
+const lin = (d0, d1, r0, r1) => (v) => r0 + (v - d0) / (d1 - d0 || 1) * (r1 - r0);
+function niceTicks(lo, hi, n = 5) {
+  const span = hi - lo, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => span / s <= n) || 10 * mag;
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/* ---------- gráfico de linhas com cruz e tooltip ---------- */
+function lineChart(host, { x, series, yfmt, tipfmt, height = 320, zeroLine = false, endLabels = true }) {
+  host.innerHTML = "";
+  const W = Math.max(320, host.clientWidth), H = height;
+  const m = { l: 52, r: endLabels && W > 560 ? 96 : 12, t: 10, b: 28 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img" }, host);
+  const xs = x.map((d) => +new Date(d));
+  const all = series.flatMap((s) => s.values).filter((v) => v != null);
+  let lo = Math.min(...all), hi = Math.max(...all);
+  if (zeroLine) hi = Math.max(hi, 0);
+  const pad = (hi - lo) * 0.04; lo -= pad; hi += zeroLine ? 0 : pad;
+  const X = lin(xs[0], xs[xs.length - 1], m.l, W - m.r), Y = lin(lo, hi, H - m.b, m.t);
+  for (const t of niceTicks(lo, hi, 5)) {
+    el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: css("--rule"), "stroke-width": 1 }, svg);
+    el("text", { x: m.l - 8, y: Y(t) + 4, "text-anchor": "end" }, svg).textContent = yfmt(t);
+  }
+  const y0 = new Date(x[0]).getFullYear(), y1 = new Date(x[x.length - 1]).getFullYear();
+  const every = W < 560 ? 3 : W < 900 ? 2 : 1;
+  for (let y = y0 + 1; y <= y1; y++) {
+    if ((y - y0) % every) continue;
+    const xx = X(+new Date(`${y}-01-01`));
+    el("line", { x1: xx, x2: xx, y1: H - m.b, y2: H - m.b + 4, stroke: css("--axis") }, svg);
+    el("text", { x: xx, y: H - 8, "text-anchor": "middle" }, svg).textContent = y;
+  }
+  el("line", { x1: m.l, x2: W - m.r, y1: zeroLine ? Y(0) : H - m.b, y2: zeroLine ? Y(0) : H - m.b, stroke: css("--axis") }, svg);
+  const ends = [];
+  for (const s of series) {
+    const d = s.values.map((v, i) => v == null ? null : `${X(xs[i]).toFixed(1)},${Y(v).toFixed(1)}`).filter(Boolean);
+    if (s.area) el("path", { d: `M${X(xs[0])},${Y(0)}L${d.join("L")}L${X(xs[xs.length - 1])},${Y(0)}Z`, fill: css(s.color), opacity: 0.12 }, svg);
+    el("path", { d: "M" + d.join("L"), fill: "none", stroke: css(s.color), "stroke-width": s.w || 2,
+      "stroke-dasharray": s.dash ? "4 3" : "none", "stroke-linejoin": "round" }, svg);
+    ends.push({ y: Y(s.values[s.values.length - 1]), s });
+  }
+  if (endLabels && W > 560) {
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+    for (const e of ends) el("text", { x: W - m.r + 8, y: e.y + 4, class: "lbl" }, svg).textContent = e.s.short || e.s.label;
+  }
+  const cross = el("line", { y1: m.t, y2: H - m.b, stroke: css("--ink-2"), "stroke-width": 1, opacity: 0 }, svg);
+  const dots = series.map((s) => el("circle", { r: 4, fill: css(s.color), stroke: css("--surface"), "stroke-width": 2, opacity: 0 }, svg));
+  const hit = el("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" }, svg);
+  hit.addEventListener("pointermove", (ev) => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    const t = xs[0] + (px - m.l) / (W - m.l - m.r) * (xs[xs.length - 1] - xs[0]);
+    let i = 0, best = Infinity; for (let k = 0; k < xs.length; k++) { const dd = Math.abs(xs[k] - t); if (dd < best) { best = dd; i = k; } }
+    cross.setAttribute("x1", X(xs[i])); cross.setAttribute("x2", X(xs[i])); cross.setAttribute("opacity", 0.5);
+    series.forEach((s, k) => { const v = s.values[i]; dots[k].setAttribute("cx", X(xs[i])); dots[k].setAttribute("cy", Y(v)); dots[k].setAttribute("opacity", v == null ? 0 : 1); });
+    const rows = series.map((s) => [s, s.values[i]]).sort((a, b) => b[1] - a[1])
+      .map(([s, v]) => `<div class="r"><span><span class="sw" style="background:${css(s.color)}"></span>${s.label}</span><b>${tipfmt(v)}</b></div>`).join("");
+    showTip(ev, `<div>${new Date(x[i]).toLocaleDateString("pt-BR")}</div>${rows}`);
+  });
+  hit.addEventListener("pointerleave", () => { hideTip(); cross.setAttribute("opacity", 0); dots.forEach((d) => d.setAttribute("opacity", 0)); });
+}
+
+function legend(host, series) {
+  host.innerHTML = series.map((s) => `<span><i class="${s.dash ? "dash" : ""}" style="background:var(${s.color})"></i>${s.label}</span>`).join("");
+}
+
+/* ---------- dados derivados ---------- */
+const C = D.curvas;
+const SERIES = [
+  { key: "estrategia", label: "Estratégia P/VPA", short: "Estratégia", color: "--s1", w: 2.5 },
+  { key: "bh_equal_weight", label: "Buy & hold equal-weight", short: "B&H EW", color: "--s2" },
+  { key: "mix_mesma_exposicao", label: "Mix mesma exposição", short: "Mix", color: "--s3" },
+  { key: "ibov", label: "Ibovespa", short: "IBOV", color: "--s4" },
+  { key: "cdi", label: "CDI", short: "CDI", color: "--muted", dash: true, w: 1.5 },
+];
+const dd = (v) => { let pk = -Infinity; return v.map((x) => { pk = Math.max(pk, x); return x / pk - 1; }); };
+const A = D.ativos;
+const AG = D.agregadas, B = D.boot;
+const cagrE = AG.estrategia.cagr, cagrEW = AG.bh_equal_weight.cagr, cagrMix = AG.mix_mesma_exposicao.cagr;
+const melhores = A.filter((a) => a.dif_cagr > 0.00005).length, piores = A.filter((a) => a.dif_cagr < -0.00005).length;
+const iguais = A.length - melhores - piores;
+const sigPos = A.filter((a) => a.dif_cagr_ic_lo > 0).length, sigNeg = A.filter((a) => a.dif_cagr_ic_hi < 0).length;
+const nunca = A.filter((a) => a.nunca_vendeu);
+
+/* ---------- cabeçalho e veredicto ---------- */
+function renderTexto() {
+  const M = D.meta;
+  $("meta").innerHTML = [
+    ["período", `${M.inicio} → ${M.fim}`], ["ativos no backtest", `${M.n_backtest} de ${M.n_lista}`],
+    ["balanços", nf(0).format(M.n_trimestres)], ["custo", pct(M.custo, 1) + " por operação"],
+    ["capital", "R$ " + nf(0).format(M.capital)], ["gerado em", M.gerado_em],
+  ].map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join("");
+
+  const venceEW = cagrE > cagrEW, venceMix = B.dif_cagr_vs_mix > 0;
+  const sigEW = B.ic_lo > 0 || B.ic_hi < 0, sigMix = B.mix_ic_lo > 0 || B.mix_ic_hi < 0;
+  let resposta;
+  if (!sigEW && !sigMix) {
+    resposta = `Não de forma que se distinga de sorte. A carteira rendeu ${pct(cagrE)} ao ano contra ${pct(cagrEW)} do buy & hold, ` +
+      `mas quase toda a diferença vem de ficar parte do tempo no CDI; contra um mix fixo com a mesma exposição a vantagem é de ${pp(B.dif_cagr_vs_mix, 2)}.`;
+  } else if (venceEW && sigEW) {
+    resposta = `Sim, com vantagem estatisticamente distinguível de zero: ${pp(B.dif_cagr_agregado)} ao ano sobre o buy & hold equal-weight.`;
+  } else {
+    resposta = `Não. A carteira ficou ${pp(B.dif_cagr_agregado)} ao ano contra o buy & hold equal-weight.`;
+  }
+  $("answer").textContent = resposta.replace(/p\.p\.\./g, "p.p.");
+
+  const tiles = [
+    ["Estratégia · CAGR", pct(cagrE), `Sharpe ${num(AG.estrategia.sharpe)} · DD ${pct(AG.estrategia.max_drawdown, 0)}`, true],
+    ["B&H equal-weight", pct(cagrEW), `Sharpe ${num(AG.bh_equal_weight.sharpe)} · DD ${pct(AG.bh_equal_weight.max_drawdown, 0)}`],
+    ["Mix mesma exposição", pct(cagrMix), `${pct(B.exposicao_media, 0)} ações + CDI · DD ${pct(AG.mix_mesma_exposicao.max_drawdown, 0)}`],
+    ["CDI", pct(AG.cdi.cagr), "caixa dos slots"],
+    ["Ibovespa", pct(AG.ibov.cagr), `DD ${pct(AG.ibov.max_drawdown, 0)}`],
+  ];
+  $("tiles").innerHTML = tiles.map(([k, v, s, main]) => `<div class="tile${main ? " main" : ""}"><span class="k">${k}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join("");
+
+  const sz = D.sens_caixa_zero;
+  const b = [
+    `<b>Contra o buy & hold equal-weight:</b> ${pp(B.dif_cagr_agregado, 2)} ao ano, IC 95% de ${pp(B.ic_lo)} a ${pp(B.ic_hi)}.`,
+    `<b>Contra o mix com a mesma exposição (${pct(B.exposicao_media, 0)} em ações):</b> ${pp(B.dif_cagr_vs_mix, 2)} ao ano, IC de ${pp(B.mix_ic_lo)} a ${pp(B.mix_ic_hi)}. É este número que mede o timing do P/VPA.`,
+    `<b>Ativo por ativo:</b> a estratégia superou o buy & hold em ${melhores} de ${A.length}, perdeu em ${piores} e empatou em ${iguais} (compraram cedo e nunca venderam). Só ${sigPos} ganham com IC acima de zero; ${sigNeg} perdem com IC abaixo de zero.`,
+    `<b>Risco:</b> drawdown máximo de ${pct(AG.estrategia.max_drawdown, 0)} contra ${pct(AG.bh_equal_weight.max_drawdown, 0)} do buy & hold e ${pct(AG.mix_mesma_exposicao.max_drawdown, 0)} do mix. Esse é o ganho mais claro do sinal.`,
+    `<b>Sem os 5 maiores ganhadores</b> (${D.conc.top5.join(", ")}) a vantagem sobre o buy & hold cai para ${pp(D.conc.sem_top5, 2)}.`,
+    `<b>Caixa sem CDI:</b> com o caixa rendendo zero, o CAGR cai para ${pct(sz.cagr)} e a diferença vira ${pp(sz.dif_cagr_vs_ew, 2)}. Num país de juro alto, o caixa é metade da estratégia.`,
+    `<b>Deflated Sharpe:</b> ${num(D.dsr.dsr)} (probabilidade de o Sharpe ${num(D.dsr.sharpe_anual)} ser real depois de ${D.dsr.n_tentativas} variantes; o limiar usual é 0,95).`,
+  ];
+  $("bullets").innerHTML = b.map((x) => `<li>${x.replace(/p\.p\.\./g, "p.p.")}</li>`).join("");
+  $("txt-ativos").textContent = `Cada ativo é comparado com o seu próprio buy & hold, a partir da data em que ficou elegível. ` +
+    `Média da diferença entre ativos: ${pp(B.media_dif_ativos)} (IC ${pp(B.media_dif_ic_lo)} a ${pp(B.media_dif_ic_hi)}, reamostrando ativos); mediana ${pp(B.mediana_dif_ativos)}. ` +
+    `Esse IC trata os ativos como independentes e por isso é otimista: eles compartilham o mesmo mercado.`;
+  $("n-ativos").textContent = A.length;
+  $("foot").innerHTML = `<span>Fontes: CVM (DFP, ITR, FCA, FRE), yfinance, B3 COTAHIST (lacuna NATU3/NTCO3), BCB SGS 12 (CDI).</span>` +
+    `<span>Parâmetros: compra P/VPA &lt; média − ${num(D.meta.k_compra, 1)}σ; venda ≥ média + ${num(D.meta.k_venda, 1)}σ; aquecimento ${D.meta.min_trimestres} trimestres; execução no fechamento do pregão seguinte ao sinal.</span>`;
+}
+
+/* ---------- tabelas ---------- */
+function tableAgg() {
+  const rows = [["estrategia", "Estratégia P/VPA"], ["bh_equal_weight", "Buy & hold equal-weight"], ["mix_mesma_exposicao", "Mix mesma exposição"], ["ibov", "Ibovespa"], ["cdi", "CDI"]];
+  const h = `<tr><th></th><th class="num">Retorno total</th><th class="num">CAGR</th><th class="num">Vol. anual</th><th class="num">Sharpe</th><th class="num">Sortino</th><th class="num">Máx. DD</th><th class="num">Dif. CAGR (IC 95%)</th></tr>`;
+  const ic = { bh_equal_weight: [B.dif_cagr_agregado, B.ic_lo, B.ic_hi], mix_mesma_exposicao: [B.dif_cagr_vs_mix, B.mix_ic_lo, B.mix_ic_hi] };
+  $("tb-agg").innerHTML = h + rows.map(([k, n]) => {
+    const r = AG[k], c = ic[k];
+    const icTxt = c ? `<span class="${sgn(c[0])}">${pp(c[0], 2)}</span> <span class="muted">[${pp(c[1])}; ${pp(c[2])}]</span>` : (k === "estrategia" ? "<span class='muted'>referência</span>" : "");
+    return `<tr class="${k === "estrategia" ? "hl" : ""}"><td>${n}</td><td class="num">${pct(r.retorno_total, 0)}</td><td class="num">${pct(r.cagr, 2)}</td><td class="num">${pct(r.vol_anual)}</td><td class="num">${num(r.sharpe)}</td><td class="num">${num(r.sortino)}</td><td class="num">${pct(r.max_drawdown)}</td><td class="num">${icTxt}</td></tr>`;
+  }).join("");
+}
+
+function ciBar(a, lo, hi) {
+  const X = lin(lo, hi, 0, 90), z = X(0);
+  const c = a.dif_cagr > 0.00005 ? "var(--pos)" : a.dif_cagr < -0.00005 ? "var(--neg)" : "var(--zero)";
+  const l = X(Math.max(lo, a.dif_cagr_ic_lo ?? a.dif_cagr)), r = X(Math.min(hi, a.dif_cagr_ic_hi ?? a.dif_cagr));
+  return `<span class="ci"><u style="left:${z}px"></u><b style="left:${l}px;width:${Math.max(1, r - l)}px"></b><i style="left:${X(Math.max(lo, Math.min(hi, a.dif_cagr)))}px;background:${c}"></i></span>`;
+}
+function tableAtivos(id, rows, full) {
+  const lo = -0.3, hi = 0.3;
+  const h = `<tr><th>Ativo</th><th class="num">Desde</th><th class="num">CAGR</th><th class="num">B&amp;H</th><th class="num">Dif.</th><th>IC 95%</th>` +
+    (full ? `<th class="num">Sharpe</th><th class="num">B&amp;H Sharpe</th><th class="num">Máx. DD</th><th class="num">B&amp;H DD</th>` : "") +
+    `<th class="num">Exposto</th><th class="num">Trades</th>` + (full ? `<th class="num">Turnover/ano</th><th class="num">Ret. médio/trade</th><th class="num">Acerto</th><th class="num">Maior caixa</th><th class="num">Maior comprado</th>` : "") + `</tr>`;
+  $(id).innerHTML = h + rows.map((a) =>
+    `<tr><td class="t">${a.ticker}</td><td class="num muted">${a.elegivel_desde.slice(0, 7)}</td><td class="num">${pct(a.cagr)}</td><td class="num">${pct(a.bh_cagr)}</td>` +
+    `<td class="num ${sgn(a.dif_cagr)}">${pp(a.dif_cagr)}</td><td>${ciBar(a, lo, hi)}${full ? ` <span class="muted mono" style="font-size:11px">${pp(a.dif_cagr_ic_lo, 0)}…${pp(a.dif_cagr_ic_hi, 0)}</span>` : ""}</td>` +
+    (full ? `<td class="num">${num(a.sharpe)}</td><td class="num">${num(a.bh_sharpe)}</td><td class="num">${pct(a.max_drawdown, 0)}</td><td class="num">${pct(a.bh_max_drawdown, 0)}</td>` : "") +
+    `<td class="num">${pct(a.pct_tempo_exposto, 0)}</td><td class="num">${a.n_trades}${a.nunca_vendeu ? ' <span class="chip hold">nunca vendeu</span>' : ""}</td>` +
+    (full ? `<td class="num">${num(a.turnover_anual, 2)}×</td><td class="num">${pct(a.retorno_medio_trade)}</td><td class="num">${pct(a.taxa_acerto, 0)}</td><td class="num">${num(a.maior_seq_caixa_anos, 1)} a</td><td class="num">${num(a.maior_seq_comprado_anos, 1)} a</td>` : "") +
+    `</tr>`).join("");
+}
+
+/* ---------- dot plot com IC ---------- */
+function dotPlot(host) {
+  host.innerHTML = "";
+  const rows = [...A].sort((a, b) => b.dif_cagr - a.dif_cagr);
+  const W = Math.max(320, host.clientWidth), rh = 15, m = { l: 62, r: 16, t: 24, b: 8 };
+  const H = m.t + rows.length * rh + m.b;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` }, host);
+  const lo = -0.45, hi = 0.6, X = lin(lo, hi, m.l, W - m.r), cl = (v) => Math.max(lo, Math.min(hi, v));
+  for (const t of W < 560 ? [-0.4, 0, 0.4] : [-0.4, -0.2, 0, 0.2, 0.4, 0.6]) {
+    el("line", { x1: X(t), x2: X(t), y1: m.t - 6, y2: H - m.b, stroke: t === 0 ? css("--axis") : css("--rule") }, svg);
+    el("text", { x: X(t), y: 12, "text-anchor": "middle" }, svg).textContent = (t > 0 ? "+" : "") + nf(0).format(t * 100) + " p.p.";
+  }
+  rows.forEach((a, i) => {
+    const y = m.t + i * rh + rh / 2;
+    const c = a.dif_cagr > 0.00005 ? css("--pos") : a.dif_cagr < -0.00005 ? css("--neg") : css("--zero");
+    el("text", { x: m.l - 8, y: y + 4, "text-anchor": "end", class: "lbl" }, svg).textContent = a.ticker;
+    if (a.dif_cagr_ic_lo != null) el("line", { x1: X(cl(a.dif_cagr_ic_lo)), x2: X(cl(a.dif_cagr_ic_hi)), y1: y, y2: y, stroke: c, "stroke-width": 2, opacity: 0.45, "stroke-linecap": "round" }, svg);
+    el("circle", { cx: X(cl(a.dif_cagr)), cy: y, r: 4, fill: c, stroke: css("--surface"), "stroke-width": 1.5 }, svg);
+    const hit = el("rect", { x: 0, y: y - rh / 2, width: W, height: rh, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", (ev) => showTip(ev,
+      `<b>${a.ticker}</b> · desde ${a.elegivel_desde.slice(0, 7)}<div class="r"><span>Estratégia</span><b>${pct(a.cagr)}</b></div><div class="r"><span>Buy &amp; hold</span><b>${pct(a.bh_cagr)}</b></div>` +
+      `<div class="r"><span>Diferença</span><b>${pp(a.dif_cagr)}</b></div><div class="r"><span>IC 95%</span><b>${pp(a.dif_cagr_ic_lo)} a ${pp(a.dif_cagr_ic_hi)}</b></div>` +
+      `<div class="r"><span>Exposto</span><b>${pct(a.pct_tempo_exposto, 0)}</b></div><div class="r"><span>Trades</span><b>${a.n_trades}</b></div>`));
+    hit.addEventListener("pointerleave", hideTip);
+  });
+}
+
+/* ---------- contribuição e histograma ---------- */
+function contribChart(host) {
+  host.innerHTML = "";
+  const all = D.conc.contrib, top = all.slice(0, 8), bot = all.slice(-5).reverse();
+  const rows = [...top, null, ...bot.reverse()];
+  const W = Math.max(300, host.clientWidth), rh = 20, m = { l: 62, r: 64, t: 6, b: 6 };
+  const H = m.t + rows.length * rh + m.b, svg = el("svg", { viewBox: `0 0 ${W} ${H}` }, host);
+  const mx = Math.max(...all.map((d) => Math.abs(d.v))), X = lin(-mx, mx, m.l, W - m.r);
+  el("line", { x1: X(0), x2: X(0), y1: 0, y2: H, stroke: css("--axis") }, svg);
+  rows.forEach((d, i) => {
+    const y = m.t + i * rh;
+    if (!d) { el("text", { x: m.l - 8, y: y + 14, "text-anchor": "end" }, svg).textContent = "…"; return; }
+    const x0 = X(Math.min(0, d.v)), w = Math.max(1, Math.abs(X(d.v) - X(0)));
+    el("rect", { x: x0, y: y + 4, width: w, height: rh - 8, rx: 2, fill: css(d.v >= 0 ? "--pos" : "--neg") }, svg);
+    el("text", { x: m.l - 8, y: y + 14, "text-anchor": "end", class: "lbl" }, svg).textContent = d.t;
+    el("text", { x: d.v >= 0 ? X(d.v) + 6 : X(0) + 6, y: y + 14 }, svg).textContent = (d.v > 0 ? "+" : "") + nf(2).format(d.v * 100) + "%";
+  });
+  const soma = all.reduce((s, d) => s + d.v, 0), top5 = all.slice(0, 5).reduce((s, d) => s + d.v, 0);
+  $("cap-contrib").textContent = `Ganho final da estratégia menos o do buy & hold, em % do capital inicial. Os 5 maiores somam ${pp(top5, 1).replace(" p.p.", "%")} de um total de ${pp(soma, 1).replace(" p.p.", "%")}. Sem eles, a vantagem anual sobre o buy & hold cai para ${pp(D.conc.sem_top5, 2)}.`;
+}
+function histChart(host) {
+  host.innerHTML = "";
+  const bins = Array.from({ length: 10 }, () => 0);
+  A.forEach((a) => { bins[Math.min(9, Math.floor(a.pct_tempo_exposto * 10))]++; });
+  const W = Math.max(300, host.clientWidth), H = 200, m = { l: 30, r: 8, t: 14, b: 26 };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` }, host);
+  const Y = lin(0, Math.max(...bins), H - m.b, m.t), bw = (W - m.l - m.r) / 10;
+  for (const t of niceTicks(0, Math.max(...bins), 4)) {
+    el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: css("--rule") }, svg);
+    el("text", { x: m.l - 6, y: Y(t) + 4, "text-anchor": "end" }, svg).textContent = t;
+  }
+  bins.forEach((n, i) => {
+    const x = m.l + i * bw + 1, y = Y(n);
+    const r = el("rect", { x, y, width: bw - 2, height: H - m.b - y, rx: 3, fill: css("--s1") }, svg);
+    el("text", { x: x + bw / 2 - 1, y: H - 8, "text-anchor": "middle" }, svg).textContent = i * 10 + "%";
+    const nomes = A.filter((a) => Math.min(9, Math.floor(a.pct_tempo_exposto * 10)) === i).map((a) => a.ticker);
+    r.addEventListener("pointermove", (ev) => showTip(ev, `<b>${i * 10}–${i * 10 + 10}% do tempo comprado</b><div>${n} ativos</div><div style="opacity:.8">${nomes.join(" ")}</div>`));
+    r.addEventListener("pointerleave", hideTip);
+  });
+  el("line", { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: css("--axis") }, svg);
+}
+
+/* ---------- sensibilidade ---------- */
+function tableSens() {
+  const S = D.sens.filter((s) => s.caixa_rende_cdi);
+  const gat = [["maximo", 0, "Máximo expandido"], ["desvio", 1, "Média + 1σ"], ["desvio", 2, "Média + 2σ"], ["desvio", 3, "Média + 3σ"]];
+  const kc = [0, 0.5, 1], cu = [0, 0.001, 0.005];
+  const mx = Math.max(...S.map((s) => Math.abs(s.dif_cagr_vs_ew)));
+  const cor = (v) => {
+    const a = Math.min(1, Math.abs(v) / mx) * 0.55;
+    return `background: color-mix(in srgb, var(${v >= 0 ? "--pos" : "--neg"}) ${Math.round(a * 100)}%, transparent)`;
+  };
+  let h = `<tr><th rowspan="2">Gatilho de venda</th><th rowspan="2">Compra abaixo de</th>` + cu.map((c) => `<th class="num" colspan="2">custo ${pct(c, 1)}</th>`).join("") + `</tr><tr>` +
+    cu.map(() => `<th class="num">vs B&amp;H</th><th class="num">Sharpe</th>`).join("") + `</tr>`;
+  for (const [g, k, nome] of gat) for (const kk of kc) {
+    const principal = g === "desvio" && k === D.meta.k_venda && kk === D.meta.k_compra;
+    h += `<tr class="${principal ? "hl" : ""}"><td>${nome}${principal ? '<span class="tag-main">principal</span>' : ""}</td><td class="mono">média${kk ? " − " + num(kk, 1) + "σ" : ""}</td>` +
+      cu.map((c) => {
+        const s = S.find((r) => r.gatilho_venda === g && (g === "maximo" || r.k_venda === k) && r.k_compra === kk && Math.abs(r.custo - c) < 1e-9);
+        return `<td class="cell"><span style="${cor(s.dif_cagr_vs_ew)}">${pp(s.dif_cagr_vs_ew, 2)}</span></td><td class="cell">${num(s.sharpe)}</td>`;
+      }).join("") + `</tr>`;
+  }
+  $("tb-sens").innerHTML = h;
+  const pos = S.filter((s) => s.dif_cagr_vs_ew > 0).length;
+  const sz = D.sens_caixa_zero;
+  $("cap-sens").innerHTML = `${pos} de ${S.length} combinações ficam acima do buy &amp; hold, nenhuma por mais de ${pp(Math.max(...S.map((s) => s.dif_cagr_vs_ew)), 2)} ao ano. ` +
+    `Comprar só mais abaixo da média (−0,5σ ou −1σ) ajuda um pouco em quase todos os gatilhos; vender cedo (média + 1σ) é a pior escolha. ` +
+    `Com o caixa a 0% (configuração principal), o CAGR cai para ${pct(sz.cagr)}, ${pp(sz.dif_cagr_vs_ew, 2)} contra o buy &amp; hold.`.replace(/p\.p\.\./g, "p.p.");
+}
+
+/* ---------- heatmaps ---------- */
+function heatmap(host, { rows, cols, m, color, tip: tf, cw, rh = 11, colLabel }) {
+  host.innerHTML = "";
+  const L = 58, T = 20, W = L + cols.length * cw + 4, H = T + rows.length * rh + 4;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, style: `width:${W}px;max-width:none` }, host);
+  cols.forEach((c, j) => { const l = colLabel(c, j); if (l) el("text", { x: L + j * cw, y: 12 }, svg).textContent = l; });
+  const g = el("g", {}, svg);
+  rows.forEach((r, i) => {
+    el("text", { x: L - 6, y: T + i * rh + rh - 2, "text-anchor": "end", class: "lbl", style: "font-size:9.5px" }, svg).textContent = r;
+    m[i].forEach((v, j) => {
+      const f = color(v); if (!f) return;
+      el("rect", { x: L + j * cw, y: T + i * rh, width: cw - (cw > 4 ? 1 : 0), height: rh - 1, fill: f, "data-i": i, "data-j": j }, g);
+    });
+  });
+  g.addEventListener("pointermove", (ev) => {
+    const t = ev.target; if (!t.dataset || t.dataset.i == null) return hideTip();
+    const i = +t.dataset.i, j = +t.dataset.j; showTip(ev, tf(rows[i], cols[j], m[i][j]));
+  });
+  g.addEventListener("pointerleave", hideTip);
+}
+function mixColor(a, b, t) {
+  const p = (h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16));
+  const A2 = p(a), B2 = p(b);
+  return `rgb(${A2.map((x, k) => Math.round(x + (B2[k] - x) * t)).join(",")})`;
+}
+function renderHeatmaps() {
+  const P = D.pos, h0 = css("--heat-0"), h1 = css("--heat-1");
+  heatmap($("ch-pos"), {
+    rows: P.tickers, cols: P.meses, m: P.m, cw: 5, rh: 11,
+    color: (v) => v == null ? null : mixColor(h0, h1, v),
+    colLabel: (c) => c.endsWith("-01") && +c.slice(0, 4) % 2 === 1 ? c.slice(0, 4) : "",
+    tip: (r, c, v) => `<b>${r}</b> · ${c}<div>${v == null ? "aquecimento" : pct(v, 0) + " do mês comprado"}</div>`,
+  });
+  const Q = D.disp, cores = [null, css("--d-con"), css("--d-ind"), css("--d-neg"), css("--d-quebra")];
+  const nomes = ["sem balanço", "consolidado", "individual", "PL ≤ 0", "quebra estrutural"];
+  heatmap($("ch-disp"), {
+    rows: Q.tickers, cols: Q.trimestres, m: Q.m, cw: 10, rh: 11,
+    color: (v) => cores[v], colLabel: (c) => c.endsWith("Q1") && +c.slice(0, 4) % 2 === 0 ? c.slice(0, 4) : "",
+    tip: (r, c, v) => `<b>${r}</b> · ${c.replace("Q", "T")}<div>${nomes[v]}</div>`,
+  });
+}
+
+function renderOutros() {
+  $("chips-hold").innerHTML = nunca.length ? nunca.sort((a, b) => b.maior_seq_comprado_anos - a.maior_seq_comprado_anos)
+    .map((a) => `<span class="chip hold">${a.ticker} · ${num(a.maior_seq_comprado_anos, 1)} anos</span>`).join("") : "<span class='muted'>nenhum</span>";
+  const longos = A.filter((a) => !a.nunca_vendeu && a.maior_seq_comprado_anos >= 8).map((a) => a.ticker);
+  $("cap-hold").textContent = `${nunca.length} ativos compraram no primeiro sinal e nunca atingiram média + ${num(D.meta.k_venda, 0)}σ; para eles a estratégia é idêntica ao buy & hold. ` +
+    (longos.length ? `Outros ${longos.length} venderam ao menos uma vez mas passaram 8 anos ou mais seguidos comprados: ${longos.join(", ")}.` : "");
+  const ex = D.excluidos;
+  if (!ex.length) { $("fig-excl").hidden = true; return; }
+  $("tb-excl").innerHTML = `<tr><th>Ativo</th><th>VPA</th><th>Backtest</th><th>Observação</th></tr>` +
+    ex.map((e) => `<tr><td class="t">${e.ticker}</td><td>${esc(e.status_vpa)}</td><td>${esc(e.status_backtest || "—")}</td><td style="white-space:normal">${esc(e.obs_mapeamento || (e.status_backtest === "sem_historico_suficiente" ? "Histórico de preço curto demais para o aquecimento de 8 trimestres" : ""))}</td></tr>`).join("");
+}
+
+function renderCharts() {
+  const toMi = (k) => C[k].map((v) => v);
+  lineChart($("ch-curva"), {
+    x: C.datas, series: SERIES.map((s) => ({ ...s, values: toMi(s.key) })),
+    yfmt: (v) => mi(v), tipfmt: (v) => "R$ " + mi(v) + " mi", height: 340,
+  });
+  legend($("leg-curva"), SERIES);
+  const DDS = SERIES.slice(0, 4).map((s) => ({ ...s, values: dd(C[s.key]), area: s.key === "estrategia" }));
+  lineChart($("ch-dd"), { x: C.datas, series: DDS, yfmt: (v) => nf(0).format(v * 100) + "%", tipfmt: (v) => pct(v), height: 200, zeroLine: true });
+  legend($("leg-dd"), DDS);
+  dotPlot($("ch-dots"));
+  contribChart($("ch-contrib"));
+  histChart($("ch-hist"));
+  renderHeatmaps();
+}
+
+function render() {
+  renderTexto(); tableAgg();
+  const ord = [...A].sort((a, b) => b.dif_cagr - a.dif_cagr);
+  tableAtivos("tb-top", ord.slice(0, 10), false);
+  tableAtivos("tb-bot", ord.slice(-10).reverse(), false);
+  tableAtivos("tb-all", ord, true);
+  tableSens(); renderOutros(); renderCharts();
+  window.__relatorioPronto = true;
+}
+render();
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(renderCharts, 150); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", renderCharts);
+new MutationObserver(renderCharts).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>
