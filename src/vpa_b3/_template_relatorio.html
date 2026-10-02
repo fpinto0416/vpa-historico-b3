@@ -15,7 +15,7 @@
   --axis: #c3c9ce;
   --accent: #0f766e;
   --accent-soft: #dff1ee;
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300;
   --pos: #2a78d6; --neg: #e34948; --zero: #b9bec3;
   --heat-0: #e8edf2; --heat-1: #1c5cab; --na: transparent;
   --d-con: #2a78d6; --d-ind: #1baf7a; --d-neg: #d03b3b; --d-quebra: #eda100;
@@ -29,7 +29,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
     --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
     --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
     --heat-0: #1d2830; --heat-1: #6da7ec;
     --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
@@ -40,7 +40,7 @@
 :root[data-theme="dark"] {
   --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
   --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
   --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
   --heat-0: #1d2830; --heat-1: #6da7ec;
   --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
@@ -574,7 +574,7 @@ function histChart(host) {
 
 /* ---------- sensibilidade ---------- */
 function tableSens() {
-  const S = D.sens.filter((s) => s.caixa_rende_cdi);
+  const S = D.sens.filter((s) => s.caixa_rende_cdi && !s.filtro_compra);
   const gat = [["maximo", 0, "Máximo expandido"], ["desvio", 1, "Média + 1σ"], ["desvio", 2, "Média + 2σ"], ["desvio", 3, "Média + 3σ"]];
   const kc = [0, 0.5, 1, 2], cu = [0, 0.001, 0.005];
   const mx = Math.max(...S.map((s) => Math.abs(s.dif_cagr_vs_ew)));
@@ -657,8 +657,9 @@ function renderOutros() {
 
 /* ---------- variações ---------- */
 const V = D.variantes, CV = D.curvas_var;
-const VCOR = ["--s1", "--s2", "--s3", "--s4", "--s5"];
-const regra = (v) => ({ compra: v.k_compra ? `média − ${num(v.k_compra, 0)}σ` : "média", venda: `média + ${num(v.k_venda, 0)}σ` });
+const VCOR = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6"];
+const regra = (v) => ({ compra: (v.k_compra ? `média − ${num(v.k_compra, 0)}σ` : "média") + (v.filtro_compra === "macd" ? " e MACD > 0" : ""),
+  venda: `média + ${num(v.k_venda, 0)}σ` });
 function renderVariantes() {
   const series = V.map((v, i) => ({ key: v.nome, label: `${v.nome} (${regra(v).compra} / ${regra(v).venda})`, short: v.nome.replace("Estratégia", "Estr."),
     color: VCOR[i], w: i === 0 ? 2.5 : 2, values: CV.series[v.nome] }));
@@ -698,7 +699,8 @@ function textoVariantes() {
     ? `Maior Sharpe e menor drawdown: <b>${bs.nome}</b> (${num(bs.sharpe)}, ${pct(bd.max_drawdown, 0)}), com ${pct(bs.exposicao_media, 0)} de exposição média. `
     : `Maior Sharpe: <b>${bs.nome}</b> (${num(bs.sharpe)}). Menor drawdown: <b>${bd.nome}</b> (${pct(bd.max_drawdown, 0)}, exposição ${pct(bd.exposicao_media, 0)}). `;
   $("txt-var").innerHTML = (`Maior CAGR: <b>${bc.nome}</b> (${pct(bc.cagr, 2)}). ` + risco +
-    `Menor CAGR: <b>${pior.nome}</b> (${pct(pior.cagr, 2)}, venda em média + ${num(pior.k_venda, 0)}σ). ` +
+    `Menor CAGR: <b>${pior.nome}</b> (${pct(pior.cagr, 2)}; compra em ${regra(pior).compra}, venda em ${regra(pior).venda}). ` +
+    V.filter((v) => v.filtro_compra === "macd").map((v) => `Na <b>${v.nome}</b> o MACD só confirma a compra quando o preço já voltou a subir, e a entrada no fundo de um V fica para trás: o pior ano contra a ${V[0].nome} é ${v.pior_ano} (${pp(v.pior_ano_dif)}). `).join("") +
     (sigMix.length ? `${sigMix.map((v) => v.nome).join(", ")} se distingue do mix de mesma exposição.` :
       `Nenhuma das variações se distingue do mix fixo com a própria exposição: todos os intervalos de confiança cruzam zero.`)).replace(/p\.p\.\./g, "p.p.");
   const h = `<tr><th>Variação</th><th>Compra</th><th>Venda</th><th class="num">CAGR</th><th class="num">Sharpe</th><th class="num">Máx. DD</th><th class="num">Exposição</th>` +

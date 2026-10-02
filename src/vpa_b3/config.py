@@ -76,16 +76,20 @@ class ParamsEstrategia:
     k_venda: float = 2.0
     custo: float = 0.001             # por trade (fração do valor)
     caixa_rende_cdi: bool = True
+    filtro_compra: str | None = None  # "macd": compra só com MACD(12,26) > 0
 
 
-# Variações comparadas lado a lado no relatório: nome → (k_compra, k_venda).
+# Variações comparadas lado a lado no relatório: nome → (k_compra, k_venda[, filtro_compra]).
 # Compra em P/VPA < média − k_compra·σ; venda em P/VPA >= média + k_venda·σ.
-VARIANTES: dict[str, tuple[float, float]] = {
+# filtro_compra "macd": a compra também exige MACD(12,26) > 0 no mesmo pregão (o sinal de
+# compra do Cenário 2 do estudo HiLo+MACD); a venda continua só pelo P/VPA.
+VARIANTES: dict[str, tuple] = {
     "Estratégia 1": (0.0, 2.0),   # principal
     "Estratégia 2": (2.0, 2.0),
     "Estratégia 3": (1.0, 1.0),
     "Estratégia 4": (1.0, 3.0),
     "Estratégia 5": (2.0, 3.0),
+    "Estratégia 6": (0.0, 2.0, "macd"),
 }
 
 

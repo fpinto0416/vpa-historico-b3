@@ -69,6 +69,16 @@ def _amostrar(s: pd.Series, regra: str = "W-FRI") -> pd.Series:
     return s.resample(regra).last().dropna()
 
 
+def _pior_ano_vs_principal(cv: pd.DataFrame) -> dict:
+    """Ano em que cada variação mais perdeu da primeira (a principal), em p.p. de retorno anual."""
+    anual = cv.resample("YE").last()
+    ret = anual.pct_change()
+    ret.iloc[0] = anual.iloc[0] / cv.iloc[0] - 1
+    dif = ret.sub(ret.iloc[:, 0], axis=0)
+    return {"pior_ano": [int(dif[c].idxmin().year) if c != cv.columns[0] else None for c in cv.columns],
+            "pior_ano_dif": [float(dif[c].min()) if c != cv.columns[0] else None for c in cv.columns]}
+
+
 def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
     p = res["params"]
     curvas = res["curvas"].apply(_amostrar)
@@ -110,7 +120,8 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
 
     # Sensibilidade (grade principal sem a variante de caixa a 0%).
     principal = sens[(sens.gatilho_venda == p.gatilho_venda) & (sens.k_venda == p.k_venda)
-                     & (sens.k_compra == p.k_compra) & (sens.custo == p.custo) & sens.caixa_rende_cdi].iloc[0]
+                     & (sens.k_compra == p.k_compra) & (sens.custo == p.custo) & sens.caixa_rende_cdi
+                     & sens.filtro_compra.isna()].iloc[0]
     caixa_zero = sens[~sens.caixa_rende_cdi].iloc[0]
 
     conc = res["concentracao"]
@@ -140,7 +151,8 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
                                  "maior_seq_caixa_anos", "maior_seq_comprado_anos", "nunca_vendeu",
                                  "sharpe", "bh_sharpe", "max_drawdown", "bh_max_drawdown"]]
                              .assign(elegivel_desde=lambda d: d["elegivel_desde"].astype(str))),
-        "sens": _registros(sens[["gatilho_venda", "k_venda", "k_compra", "custo", "caixa_rende_cdi", "cagr",
+        "sens": _registros(sens[["gatilho_venda", "k_venda", "k_compra", "custo", "caixa_rende_cdi",
+                                 "filtro_compra", "cagr",
                                  "sharpe", "max_drawdown", "dif_cagr_vs_ew", "ativos_que_batem_bh", "n_ativos",
                                  "mediana_dif_cagr", "n_trades", "pct_tempo_exposto"]]),
         "sens_principal": {k: _num(v) for k, v in principal.items()},
@@ -152,7 +164,7 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
                    "acerto": _num((rt.loc[~rt["aberta"], "retorno"] > 0).mean()),
                    "ret_medio": _num(rt.loc[~rt["aberta"], "retorno"].mean()),
                    "dias_medio": _num(rt.loc[~rt["aberta"], "dias"].mean())},
-        "variantes": _registros(res["variantes"]),
+        "variantes": _registros(res["variantes"].assign(**_pior_ano_vs_principal(res["curvas_variantes"]))),
         "curvas_var": {"datas": [d.strftime("%Y-%m-%d") for d in cv.index],
                        "series": {c: [round(float(v), 2) for v in cv[c]] for c in cv.columns},
                        "ew": [round(float(v), 2) for v in curvas["bh_equal_weight"]],

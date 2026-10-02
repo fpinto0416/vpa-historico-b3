@@ -58,10 +58,23 @@ def estatisticas(d: pd.DataFrame, min_trimestres: int) -> pd.DataFrame:
     return d
 
 
+def macd(close: pd.Series, rapida: int = 12, lenta: int = 26) -> pd.Series:
+    """Linha do MACD (MME rápida − MME lenta do fechamento), como no estudo HiLo+MACD.
+
+    Calculada sobre o fechamento ajustado só por split: o ajuste por proventos do
+    yfinance usa dividendos futuros. Só usa dados até t (MME recursiva).
+    """
+    return close.ewm(span=rapida, adjust=False).mean() - close.ewm(span=lenta, adjust=False).mean()
+
+
 def sinais(est: pd.DataFrame, p: ParamsEstrategia) -> pd.DataFrame:
     """Colunas booleanas `compra`, `venda` (inclui saídas forçadas) e `elegivel`."""
     pv = est["pvpa"]
     compra = est["elegivel"] & (pv < est["media"] - p.k_compra * est["desvio"])
+    if p.filtro_compra == "macd":
+        compra &= est["macd"] > 0
+    elif p.filtro_compra is not None:
+        raise ValueError(f"filtro_compra inválido: {p.filtro_compra}")
     if p.gatilho_venda == "maximo":
         venda = est["elegivel"] & (pv >= est["maximo"])
     elif p.gatilho_venda == "desvio":

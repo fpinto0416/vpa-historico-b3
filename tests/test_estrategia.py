@@ -93,3 +93,19 @@ def test_bootstrap_estacionario_indices_validos():
     assert idx.shape == (50, 500) and idx.min() >= 0 and idx.max() < 500
     # blocos: a maioria dos passos é consecutiva
     assert (np.diff(idx, axis=1) == 1).mean() > 0.9
+
+
+def test_filtro_macd_so_restringe_a_compra():
+    est = estrategia.estatisticas(_base([3.0, 3.0, 1.0, 1.0, 9.0]), min_trimestres=1)
+    est["macd"] = [1.0, 1.0, -1.0, 1.0, -1.0]
+    sem = estrategia.sinais(est, ParamsEstrategia())
+    com = estrategia.sinais(est, ParamsEstrategia(filtro_compra="macd"))
+    assert sem["compra"].iloc[2] and not com["compra"].iloc[2]   # P/VPA barato, MACD < 0
+    assert com["compra"].iloc[3]                                  # barato e MACD > 0
+    assert com["venda"].iloc[4] == sem["venda"].iloc[4]          # venda ignora o MACD
+
+
+def test_macd_sinal_de_tendencia():
+    alta = pd.Series(np.linspace(10, 20, 100))
+    assert estrategia.macd(alta).iloc[-1] > 0
+    assert estrategia.macd(alta[::-1].reset_index(drop=True)).iloc[-1] < 0

@@ -35,6 +35,7 @@ def preparar(vpa: pd.DataFrame, p: ParamsEstrategia) -> dict:
         try:
             px = precos.baixar_ativo(t)
             est = estrategia.estatisticas(processamento.pvpa_diario(s, px), p.min_trimestres)
+            est["macd"] = estrategia.macd(px["close"]).reindex(est.index).to_numpy()
             if not est["elegivel"].any():
                 status.append({"ticker": t, "backtest": "sem_historico_suficiente"})
                 continue
@@ -235,6 +236,10 @@ def grade_sensibilidade() -> list[ParamsEstrategia]:
     grade = [replace(base, gatilho_venda=g, k_venda=k, k_compra=kc, custo=c)
              for (g, k), kc, c in itertools.product(gatilhos, (0.0, 0.5, 1.0, 2.0), (0.0, 0.001, 0.005))]
     grade.append(replace(base, caixa_rende_cdi=False))
+    # Variações com filtro de compra entram na contagem de tentativas do DSR.
+    for kc, kv, *filtro in config.VARIANTES.values():
+        if filtro:
+            grade.append(replace(base, k_compra=kc, k_venda=kv, filtro_compra=filtro[0]))
     return grade
 
 
@@ -291,7 +296,7 @@ def avaliar_variante(nome: str, res: dict, dados: dict, sharpes_grade: np.ndarra
     m = metricas(agg, cdi)
     return {
         "resumo": {
-            "nome": nome, "k_compra": p.k_compra, "k_venda": p.k_venda, **m,
+            "nome": nome, "k_compra": p.k_compra, "k_venda": p.k_venda, "filtro_compra": p.filtro_compra, **m,
             "exposicao_media": exposicao,
             "dif_cagr_vs_ew": m["cagr"] - cagr(ew), "ew_ic_lo": ew_lo, "ew_ic_hi": ew_hi,
             "cagr_mix": cagr(mix), "dd_mix": metricas(mix, cdi)["max_drawdown"],
@@ -370,8 +375,9 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
 
     # Variações lado a lado (mesmo custo e mesmo B&H da principal).
     variantes, curvas_var, por_ativo_var = [], {}, []
-    for nome, (kc, kv) in config.VARIANTES.items():
-        q = replace(p, k_compra=kc, k_venda=kv, gatilho_venda="desvio")
+    for nome, (kc, kv, *filtro) in config.VARIANTES.items():
+        q = replace(p, k_compra=kc, k_venda=kv, gatilho_venda="desvio",
+                    filtro_compra=filtro[0] if filtro else None)
         r = principal if q == p else {**rodar(dados, q, com_bh=False), "bh": principal["bh"]}
         av = avaliar_variante(nome, r, dados, sens["sharpe_diario"].to_numpy())
         variantes.append(av["resumo"])
