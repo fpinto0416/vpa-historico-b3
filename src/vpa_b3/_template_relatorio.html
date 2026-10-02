@@ -15,7 +15,7 @@
   --axis: #c3c9ce;
   --accent: #0f766e;
   --accent-soft: #dff1ee;
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
   --pos: #2a78d6; --neg: #e34948; --zero: #b9bec3;
   --heat-0: #e8edf2; --heat-1: #1c5cab; --na: transparent;
   --d-con: #2a78d6; --d-ind: #1baf7a; --d-neg: #d03b3b; --d-quebra: #eda100;
@@ -29,7 +29,7 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
     --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
     --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
     --heat-0: #1d2830; --heat-1: #6da7ec;
     --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
@@ -40,7 +40,7 @@
 :root[data-theme="dark"] {
   --bg: #0d1317; --surface: #141b20; --ink: #eef2f4; --ink-2: #b4bfc7; --muted: #7f8a93;
   --rule: #25313a; --axis: #3a4650; --accent: #2dd4bf; --accent-soft: #123430;
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
   --pos: #3987e5; --neg: #e66767; --zero: #4a545c;
   --heat-0: #1d2830; --heat-1: #6da7ec;
   --d-con: #3987e5; --d-ind: #199e70; --d-neg: #e66767; --d-quebra: #c98500;
@@ -106,6 +106,7 @@ th { text-align: left; font: 500 11px/1.3 var(--f-mono); letter-spacing: 0.04em;
 th.num, td.num { text-align: right; }
 td { padding: 7px 10px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
 tr.hl td { background: var(--accent-soft); }
+tr.ctrl td { color: var(--ink-2); font-style: italic; border-top: 1px dashed var(--axis); }
 td.t { font-family: var(--f-mono); font-weight: 600; }
 .pos { color: var(--good); } .neg { color: var(--bad); }
 .chip { font: 500 11px/1 var(--f-mono); padding: 3px 7px; border-radius: 99px; border: 1px solid var(--rule); color: var(--ink-2);
@@ -574,7 +575,7 @@ function histChart(host) {
 
 /* ---------- sensibilidade ---------- */
 function tableSens() {
-  const S = D.sens.filter((s) => s.caixa_rende_cdi && !s.filtro_compra);
+  const S = D.sens.filter((s) => s.caixa_rende_cdi && !s.filtro_compra && !s.filtro_venda);
   const gat = [["maximo", 0, "Máximo expandido"], ["desvio", 1, "Média + 1σ"], ["desvio", 2, "Média + 2σ"], ["desvio", 3, "Média + 3σ"]];
   const kc = [0, 0.5, 1, 2], cu = [0, 0.001, 0.005];
   const mx = Math.max(...S.map((s) => Math.abs(s.dif_cagr_vs_ew)));
@@ -657,11 +658,12 @@ function renderOutros() {
 
 /* ---------- variações ---------- */
 const V = D.variantes, CV = D.curvas_var;
-const VCOR = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7"];
-const regra = (v) => ({ compra: (v.k_compra ? `média − ${num(v.k_compra, 0)}σ` : "média") + (v.filtro_compra === "macd" ? " e MACD > 0" : ""),
-  venda: `média + ${num(v.k_venda, 0)}σ` });
+const VCOR = ["--s1", "--s2", "--s3", "--s4", "--s5", "--s6", "--s7", "--s8"];
+const ehControle = (v) => v.nome.startsWith("Controle");
+const regra = (v) => ehControle(v) ? { compra: "MACD > 0", venda: "MACD < 0" } : ({ compra: (v.k_compra ? `média − ${num(v.k_compra, 0)}σ` : "média") + (v.filtro_compra === "macd" ? " e MACD > 0" : ""),
+  venda: `média + ${num(v.k_venda, 0)}σ` + (v.filtro_venda === "macd" ? " ou MACD < 0" : "") });
 function renderVariantes() {
-  const series = V.map((v, i) => ({ key: v.nome, label: `${v.nome} (${regra(v).compra} / ${regra(v).venda})`, short: v.nome.replace("Estratégia", "Estr."),
+  const series = V.filter((v) => !ehControle(v)).map((v, i) => ({ key: v.nome, label: `${v.nome} (${regra(v).compra} / ${regra(v).venda})`, short: v.nome.replace("Estratégia", "Estr."),
     color: VCOR[i], w: i === 0 ? 2.5 : 2, values: CV.series[v.nome] }));
   series.push({ key: "ew", label: "Buy & hold equal-weight", short: "B&H EW", color: "--ink-2", w: 1.25, values: CV.ew });
   series.push({ key: "cdi", label: "CDI", short: "CDI", color: "--muted", dash: true, w: 1.5, values: CV.cdi });
@@ -692,22 +694,31 @@ function renderVariantes() {
   });
 }
 function textoVariantes() {
-  const best = (k, dir = 1) => V.reduce((a, b) => (b[k] * dir > a[k] * dir ? b : a));
+  const VE = V.filter((v) => !ehControle(v));
+  const best = (k, dir = 1) => VE.reduce((a, b) => (b[k] * dir > a[k] * dir ? b : a));
   const bc = best("cagr"), bs = best("sharpe"), bd = best("max_drawdown"), pior = best("cagr", -1);
-  const sigMix = V.filter((v) => v.mix_ic_lo > 0 || v.mix_ic_hi < 0);
+  const sigMix = VE.filter((v) => v.mix_ic_lo > 0 || v.mix_ic_hi < 0);
   const risco = bs === bd
     ? `Maior Sharpe e menor drawdown: <b>${bs.nome}</b> (${num(bs.sharpe)}, ${pct(bd.max_drawdown, 0)}), com ${pct(bs.exposicao_media, 0)} de exposição média. `
     : `Maior Sharpe: <b>${bs.nome}</b> (${num(bs.sharpe)}). Menor drawdown: <b>${bd.nome}</b> (${pct(bd.max_drawdown, 0)}, exposição ${pct(bd.exposicao_media, 0)}). `;
   $("txt-var").innerHTML = (`Maior CAGR: <b>${bc.nome}</b> (${pct(bc.cagr, 2)}). ` + risco +
     `Menor CAGR: <b>${pior.nome}</b> (${pct(pior.cagr, 2)}; compra em ${regra(pior).compra}, venda em ${regra(pior).venda}). ` +
-    V.filter((v) => v.filtro_compra === "macd").map((v) => `Na <b>${v.nome}</b> o MACD só confirma a compra quando o preço já voltou a subir, e a entrada no fundo de um V fica para trás: o pior ano contra a ${V[0].nome} é ${v.pior_ano} (${pp(v.pior_ano_dif)}). `).join("") +
+    V.filter((v) => v.filtro_compra === "macd" && !v.filtro_venda).map((v) => `Na <b>${v.nome}</b> o MACD só confirma a compra quando o preço já voltou a subir, e a entrada no fundo de um V fica para trás: o pior ano contra a ${V[0].nome} é ${v.pior_ano} (${pp(v.pior_ano_dif)}). `).join("") +
+    (() => {
+      const ctrl = V.find(ehControle), com = VE.find((v) => v.filtro_venda === "macd");
+      if (!ctrl || !com) return "";
+      return `A <b>${com.nome}</b> vende também quando o MACD vira negativo: vira um seguidor de tendência (${nf(0).format(com.n_trades)} operações, ` +
+        `duração média de ${nf(0).format(com.dias_medio_trade)} dias, acerto de ${pct(com.acerto, 0)}). O <b>controle só com MACD</b>, sem P/VPA, rende ${pct(ctrl.cagr, 1)} ` +
+        `com drawdown de ${pct(ctrl.max_drawdown, 0)}, mas sem os 5 maiores ganhadores (${ctrl.top5}) a vantagem sobre o buy &amp; hold cai para ${pp(ctrl.dif_cagr_sem_top5, 1)}: ` +
+        `é o MACD surfando as maiores altas da lista de hoje, o caso mais claro de survivorship do estudo. Na ${com.nome}, o P/VPA corta a exposição e o drawdown e também a maior parte dessas altas. `;
+    })() +
     (sigMix.length ? `${sigMix.map((v) => v.nome).join(", ")} se distingue do mix de mesma exposição.` :
       `Nenhuma das variações se distingue do mix fixo com a própria exposição: todos os intervalos de confiança cruzam zero.`)).replace(/p\.p\.\./g, "p.p.");
   const h = `<tr><th>Variação</th><th>Compra</th><th>Venda</th><th class="num">CAGR</th><th class="num">Sharpe</th><th class="num">Máx. DD</th><th class="num">Exposição</th>` +
     `<th class="num">vs B&amp;H (IC 95%)</th><th class="num">vs mix (IC 95%)</th><th class="num">Ativos + / = / −</th><th class="num">Nunca compraram</th><th class="num">Nunca venderam</th>` +
     `<th class="num">Trades</th><th class="num">Duração média</th><th class="num">Sem top 5</th><th class="num">DSR</th></tr>`;
   const ic = (d, lo, hi) => `<span class="${sgn(d)}">${pp(d, 2)}</span> <span class="muted">[${pp(lo)}; ${pp(hi)}]</span>`;
-  $("tb-var").innerHTML = h + V.map((v, i) => `<tr class="${i === 0 ? "hl" : ""}"><td><span class="legend"><span><i style="background:var(${VCOR[i]})"></i>${v.nome}${i === 0 ? '<span class="tag-main">principal</span>' : ""}</span></span></td>` +
+  $("tb-var").innerHTML = h + V.map((v, i) => `<tr class="${i === 0 ? "hl" : ""}${ehControle(v) ? " ctrl" : ""}"><td><span class="legend"><span><i style="background:var(${ehControle(v) ? "--muted" : VCOR[i]})"></i>${v.nome}${i === 0 ? '<span class="tag-main">principal</span>' : ""}</span></span></td>` +
     `<td class="mono">${regra(v).compra}</td><td class="mono">${regra(v).venda}</td><td class="num">${pct(v.cagr, 2)}</td><td class="num">${num(v.sharpe)}</td><td class="num">${pct(v.max_drawdown)}</td>` +
     `<td class="num">${pct(v.exposicao_media, 0)}</td><td class="num">${ic(v.dif_cagr_vs_ew, v.ew_ic_lo, v.ew_ic_hi)}</td><td class="num">${ic(v.dif_cagr_vs_mix, v.mix_ic_lo, v.mix_ic_hi)}</td>` +
     `<td class="num">${v.ativos_ganham} / ${v.ativos_empatam} / ${v.ativos_perdem}</td><td class="num">${v.nunca_compraram}</td><td class="num">${v.nunca_venderam}</td>` +

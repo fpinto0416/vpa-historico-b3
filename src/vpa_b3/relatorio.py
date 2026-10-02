@@ -121,7 +121,7 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
     # Sensibilidade (grade principal sem a variante de caixa a 0%).
     principal = sens[(sens.gatilho_venda == p.gatilho_venda) & (sens.k_venda == p.k_venda)
                      & (sens.k_compra == p.k_compra) & (sens.custo == p.custo) & sens.caixa_rende_cdi
-                     & sens.filtro_compra.isna()].iloc[0]
+                     & sens.filtro_compra.isna() & sens.filtro_venda.isna()].iloc[0]
     caixa_zero = sens[~sens.caixa_rende_cdi].iloc[0]
 
     conc = res["concentracao"]
@@ -152,7 +152,7 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
                                  "sharpe", "bh_sharpe", "max_drawdown", "bh_max_drawdown"]]
                              .assign(elegivel_desde=lambda d: d["elegivel_desde"].astype(str))),
         "sens": _registros(sens[["gatilho_venda", "k_venda", "k_compra", "custo", "caixa_rende_cdi",
-                                 "filtro_compra", "cagr",
+                                 "filtro_compra", "filtro_venda", "cagr",
                                  "sharpe", "max_drawdown", "dif_cagr_vs_ew", "ativos_que_batem_bh", "n_ativos",
                                  "mediana_dif_cagr", "n_trades", "pct_tempo_exposto"]]),
         "sens_principal": {k: _num(v) for k, v in principal.items()},

@@ -81,6 +81,10 @@ def sinais(est: pd.DataFrame, p: ParamsEstrategia) -> pd.DataFrame:
         venda = est["elegivel"] & (pv >= est["media"] + p.k_venda * est["desvio"])
     else:
         raise ValueError(f"gatilho_venda inválido: {p.gatilho_venda}")
+    if p.filtro_venda == "macd":
+        venda = venda | (est["macd"] < 0)
+    elif p.filtro_venda is not None:
+        raise ValueError(f"filtro_venda inválido: {p.filtro_venda}")
     forcada = pv.isna() | est["quebra"]
     return pd.DataFrame({"compra": compra.fillna(False), "venda": (venda.fillna(False) | forcada),
                          "forcada": forcada, "elegivel": est["elegivel"]}, index=est.index)

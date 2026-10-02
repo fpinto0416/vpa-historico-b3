@@ -19,8 +19,8 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 - Contra o buy & hold: **+0,57 p.p./ano, IC 95% [−7,7; +8,4]** (bootstrap estacionário em blocos).
 - Contra o mix de mesma exposição, que isola o *timing*: **+0,19 p.p./ano, IC [−3,6; +3,7]**.
 - Ativo por ativo: 52 ganham, 20 perdem, 15 empatam (compraram no 1º sinal e nunca venderam). Só 6 ganham com IC > 0.
-- Sem os 5 maiores ganhadores: +0,29 p.p. Com caixa a 0%: −1,69 p.p. contra o buy & hold.
-- Deflated Sharpe 0,59 (50 variantes testadas; limiar usual 0,95).
+- Sem os 5 ativos que mais somaram em R$ (SBSP3, DIRR3, PSSA3, ITSA4, BBAS3): −0,54 p.p. Com caixa a 0%: −1,69 p.p. contra o buy & hold.
+- Deflated Sharpe 0,58 (51 variantes testadas; limiar usual 0,95).
 
 ### Variações (`config.VARIANTES`, seção 03 do relatório)
 
@@ -33,16 +33,28 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | Estratégia 5 | média − 2σ | média + 3σ | 11,43% | 0,24 | −16,9% | 41% | +0,44 p.p. [−1,5; +2,4] | 36 |
 | Estratégia 6 | média **e** MACD(12,26) > 0 | média + 2σ | 9,75% | 0,05 | −15,6% | 70% | −1,53 p.p. [−5,6; +2,0] | 0 |
 | Estratégia 7 | média | média + 3σ | 10,92% | 0,15 | −23,5% | 83% | −0,27 p.p. [−4,8; +3,9] | 0 |
+| Estratégia 9 | média **e** MACD > 0 | média + 2σ **ou** MACD < 0 | 11,93% | 0,31 | −7,5% | 31% | +1,19 p.p. [−1,6; +4,4] | 0 |
+| *Controle: só MACD* | *MACD > 0* | *MACD < 0* | *19,86%* | *0,57* | *−45,7%* | *49%* | *+8,73 p.p. [−0,9; +20,4]* | *0* |
 
 Nenhuma se distingue do mix fixo com a própria exposição. A Estratégia 5 tem o melhor Sharpe (0,24)
-e DSR (0,66), mas com só 31 operações fechadas em 13 anos e +0,04 p.p. sem os 5 maiores ganhadores. A Estratégia 6 usa como confirmação o sinal de compra do Cenário 2 do estudo HiLo+MACD
+e DSR (0,66), mas com só 31 operações fechadas em 13 anos. A Estratégia 6 usa como confirmação o sinal de compra do Cenário 2 do estudo HiLo+MACD
 (linha do MACD > 0); a venda continua só pelo P/VPA. Ela fica abaixo do CDI: o MACD só confirma depois
 que o preço volta a subir, e a compra no fundo de um V fica para trás (2020: −8,1 p.p. contra a Estratégia 1).
 A Estratégia 7 vende tão raramente (43 ativos nunca vendem) que vira quase buy & hold: +0,04 p.p.
 contra o B&H, com drawdown de −23,5%.
+A Estratégia 9 também vende com MACD < 0 e vira um seguidor de tendência (5.040 operações, 41 dias
+de duração média, acerto de 38%): maior CAGR (11,93%), Sharpe (0,31), menor drawdown (−7,5%) e maior DSR (0,74)
+entre as candidatas, mas ainda com IC cruzando zero e sensível a custo (com 0,5% por operação cai para 10,02%,
+−0,71 p.p. contra o mix). O controle só com MACD rende 19,86% porque surfa MGLU3 (435x) e PRIO3 (191x) e fica
+fora das quedas delas; sem os 5 que mais somaram (MGLU3, PRIO3, ROMI3, JHSF3, USIM5) a vantagem cai de +8,98
+para +0,74 p.p. É survivorship: são as maiores altas da lista de hoje. O controle fica fora do DSR.
+
+**Concentração:** "sem os 5" tira os 5 slots que mais somaram em R$ contra o próprio buy & hold. Com esse critério
+todas as candidatas ficam negativas contra o B&H (de −0,25 a −2,0 p.p.).
+
 Exigir mais desconto na compra reduz a
 exposição e o drawdown sem mudar o retorno ajustado; vender cedo (média + 1σ) é a pior escolha.
-A grade de sensibilidade agora tem 50 variantes (49 + a Estratégia 6) (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
+A grade de sensibilidade agora tem 51 variantes (49 + Estratégias 6 e 9) (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
 
 **Leitura:** o sinal não gera retorno distinguível de sorte. O que ele entrega é **drawdown menor**,
 em boa parte por ficar parte do tempo no CDI. Os números mudam a cada rodada; o relatório é a fonte.
@@ -109,7 +121,7 @@ flag_pl_negativo, flag_quebra_estrutural, n_acoes_fonte, receipt_date_v1`).
 - Benchmarks com as mesmas regras de slot: buy & hold por ativo (compra na elegibilidade), buy & hold
   equal-weight, mix fixo com a mesma exposição média, IBOV e CDI.
 - Validação: bootstrap estacionário em blocos (média 63 pregões, 1.000 reamostras) por ativo e agregado;
-  bootstrap entre ativos; retirada dos 5 maiores ganhadores; Deflated Sharpe sobre as 50 variantes.
+  bootstrap entre ativos; retirada dos 5 slots que mais somaram em R$; Deflated Sharpe sobre as 51 variantes.
 
 ## Limitações
 

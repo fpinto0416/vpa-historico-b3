@@ -109,3 +109,11 @@ def test_macd_sinal_de_tendencia():
     alta = pd.Series(np.linspace(10, 20, 100))
     assert estrategia.macd(alta).iloc[-1] > 0
     assert estrategia.macd(alta[::-1].reset_index(drop=True)).iloc[-1] < 0
+
+
+def test_filtro_venda_macd_vende_com_macd_negativo():
+    est = estrategia.estatisticas(_base([3.0, 3.0, 1.0, 1.0, 1.0]), min_trimestres=1)
+    est["macd"] = [1.0, 1.0, 1.0, 1.0, -1.0]
+    sin = estrategia.sinais(est, ParamsEstrategia(filtro_compra="macd", filtro_venda="macd"))
+    assert sin["compra"].iloc[3] and not sin["venda"].iloc[3]
+    assert sin["venda"].iloc[4] and not sin["compra"].iloc[4]   # P/VPA ainda barato, mas MACD < 0

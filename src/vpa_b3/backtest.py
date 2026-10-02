@@ -230,6 +230,12 @@ def deflated_sharpe(retornos_exc: pd.Series, sharpes_tentativas: np.ndarray) -> 
 
 # ----------------------------------------------------------------------------- orquestração
 
+def _filtros(filtros: list) -> dict:
+    """(filtro_compra[, filtro_venda]) de uma entrada de config.VARIANTES."""
+    return {"filtro_compra": filtros[0] if filtros else None,
+            "filtro_venda": filtros[1] if len(filtros) > 1 else None}
+
+
 def grade_sensibilidade() -> list[ParamsEstrategia]:
     base = ParamsEstrategia()
     gatilhos = [("maximo", 0.0), ("desvio", 1.0), ("desvio", 2.0), ("desvio", 3.0)]
@@ -237,9 +243,9 @@ def grade_sensibilidade() -> list[ParamsEstrategia]:
              for (g, k), kc, c in itertools.product(gatilhos, (0.0, 0.5, 1.0, 2.0), (0.0, 0.001, 0.005))]
     grade.append(replace(base, caixa_rende_cdi=False))
     # Variações com filtro de compra entram na contagem de tentativas do DSR.
-    for kc, kv, *filtro in config.VARIANTES.values():
-        if filtro:
-            grade.append(replace(base, k_compra=kc, k_venda=kv, filtro_compra=filtro[0]))
+    for nome, (kc, kv, *filtros) in config.VARIANTES.items():
+        if filtros and not nome.startswith("Controle"):
+            grade.append(replace(base, k_compra=kc, k_venda=kv, **_filtros(filtros)))
     return grade
 
 
@@ -259,6 +265,15 @@ def _resumo(res: dict, dados: dict, bh_por_custo: dict) -> dict:
             "ativos_que_batem_bh": int((dif > 0).sum()), "n_ativos": len(dif),
             "mediana_dif_cagr": float(np.median(dif)), "n_trades": len(res["trades"]),
             "pct_tempo_exposto": res["comprado"].to_numpy().mean()}
+
+
+def _top5_contribuicao(res: dict) -> list[str]:
+    """Os 5 slots que mais somaram em R$ contra o próprio B&H no fim do período.
+
+    Em R$ e não em diferença de CAGR: um ativo com 2 anos de histórico pode ter a maior
+    diferença de taxa e pesar pouco no patrimônio da carteira.
+    """
+    return (res["valor"].iloc[-1] - res["bh"].iloc[-1]).nlargest(5).index.tolist()
 
 
 def mix_mesma_exposicao(res: dict, dados: dict) -> tuple[pd.Series, float]:
@@ -289,14 +304,15 @@ def avaliar_variante(nome: str, res: dict, dados: dict, sharpes_grade: np.ndarra
     pa = metricas_por_ativo(res, dados)
     ic, _ = bootstraps(res, dados, pa)
     pa = pa.merge(ic, on="ticker")
-    top5 = pa.nlargest(5, "dif_cagr")["ticker"].tolist()
+    top5 = _top5_contribuicao(res)
     resto = [t for t in res["valor"].columns if t not in top5]
     rt = round_trips(res["trades"], res["valor"])
     fechados = rt[~rt["aberta"]]
     m = metricas(agg, cdi)
     return {
         "resumo": {
-            "nome": nome, "k_compra": p.k_compra, "k_venda": p.k_venda, "filtro_compra": p.filtro_compra, **m,
+            "nome": nome, "k_compra": p.k_compra, "k_venda": p.k_venda, "filtro_compra": p.filtro_compra,
+            "filtro_venda": p.filtro_venda, **m,
             "exposicao_media": exposicao,
             "dif_cagr_vs_ew": m["cagr"] - cagr(ew), "ew_ic_lo": ew_lo, "ew_ic_hi": ew_hi,
             "cagr_mix": cagr(mix), "dd_mix": metricas(mix, cdi)["max_drawdown"],
@@ -351,8 +367,8 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
     agg = principal["valor"].sum(axis=1)
     dsr = deflated_sharpe(agg.pct_change() - (cdi - 1), sens["sharpe_diario"].to_numpy())
 
-    # Concentração: tira os 5 que mais ganharam do B&H e refaz o agregado.
-    top5 = por_ativo.nlargest(5, "dif_cagr")["ticker"].tolist()
+    # Concentração: tira os 5 que mais somaram em R$ contra o B&H e refaz o agregado.
+    top5 = _top5_contribuicao(principal)
     resto = [t for t in principal["valor"].columns if t not in top5]
     concentracao = {
         "top5": top5,
@@ -375,9 +391,8 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
 
     # Variações lado a lado (mesmo custo e mesmo B&H da principal).
     variantes, curvas_var, por_ativo_var = [], {}, []
-    for nome, (kc, kv, *filtro) in config.VARIANTES.items():
-        q = replace(p, k_compra=kc, k_venda=kv, gatilho_venda="desvio",
-                    filtro_compra=filtro[0] if filtro else None)
+    for nome, (kc, kv, *filtros) in config.VARIANTES.items():
+        q = replace(p, k_compra=kc, k_venda=kv, gatilho_venda="desvio", **_filtros(filtros))
         r = principal if q == p else {**rodar(dados, q, com_bh=False), "bh": principal["bh"]}
         av = avaliar_variante(nome, r, dados, sens["sharpe_diario"].to_numpy())
         variantes.append(av["resumo"])
