@@ -96,7 +96,8 @@ Saídas: `data/processed/vpa_trimestral.{parquet,csv}` (fora do git; só `amostr
   36 slots nunca compram), E3 −1σ/+1σ 10,42% (pior), E4 −1σ/+3σ 11,58% (maior CAGR), E5 −2σ/+3σ 11,43% (Sharpe 0,24, DSR 0,66, só 31
   round trips; vs mix +0,44 p.p. IC [−1,5; +2,4]). E6 = E1 + compra só com MACD(12,26) > 0
   (sinal de compra do Cenário 2 de /app/Codigos_soltos/hilo_macd_vwap_81; lá sobre adj close, aqui sobre
-  close só-split — concordam em 98% dos pregões): 9,75%, abaixo do CDI; perde a compra no fundo do V (2020). Nenhuma bate o
+  close só-split — concordam em 98% dos pregões): 9,75%, abaixo do CDI; perde a compra no fundo do V (2020).
+  E7 média/+3σ: 10,92%, expo 83%, 43 nunca vendem → quase B&H (+0,04 p.p.), DD −23,5%. Nenhuma bate o
   mix da própria exposição. Grade de sensibilidade ampliada para k_compra 2 → 49 tentativas no DSR.
 - 15 ativos compram no 1º sinal e nunca vendem (utilities/bancos ficam 8–13 anos comprados).
 - O benchmark "mix mesma exposição" foi adicionado por nós (não estava no prompt): sem ele, o ganho

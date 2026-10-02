@@ -32,11 +32,14 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | Estratégia 4 | média − 1σ | média + 3σ | 11,58% | 0,21 | −18,5% | 63% | +0,31 p.p. [−2,5; +3,1] | 10 |
 | Estratégia 5 | média − 2σ | média + 3σ | 11,43% | 0,24 | −16,9% | 41% | +0,44 p.p. [−1,5; +2,4] | 36 |
 | Estratégia 6 | média **e** MACD(12,26) > 0 | média + 2σ | 9,75% | 0,05 | −15,6% | 70% | −1,53 p.p. [−5,6; +2,0] | 0 |
+| Estratégia 7 | média | média + 3σ | 10,92% | 0,15 | −23,5% | 83% | −0,27 p.p. [−4,8; +3,9] | 0 |
 
 Nenhuma se distingue do mix fixo com a própria exposição. A Estratégia 5 tem o melhor Sharpe (0,24)
 e DSR (0,66), mas com só 31 operações fechadas em 13 anos e +0,04 p.p. sem os 5 maiores ganhadores. A Estratégia 6 usa como confirmação o sinal de compra do Cenário 2 do estudo HiLo+MACD
 (linha do MACD > 0); a venda continua só pelo P/VPA. Ela fica abaixo do CDI: o MACD só confirma depois
 que o preço volta a subir, e a compra no fundo de um V fica para trás (2020: −8,1 p.p. contra a Estratégia 1).
+A Estratégia 7 vende tão raramente (43 ativos nunca vendem) que vira quase buy & hold: +0,04 p.p.
+contra o B&H, com drawdown de −23,5%.
 Exigir mais desconto na compra reduz a
 exposição e o drawdown sem mudar o retorno ajustado; vender cedo (média + 1σ) é a pior escolha.
 A grade de sensibilidade agora tem 50 variantes (49 + a Estratégia 6) (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.

@@ -90,6 +90,7 @@ VARIANTES: dict[str, tuple] = {
     "Estratégia 4": (1.0, 3.0),
     "Estratégia 5": (2.0, 3.0),
     "Estratégia 6": (0.0, 2.0, "macd"),
+    "Estratégia 7": (0.0, 3.0),
 }
 
 
