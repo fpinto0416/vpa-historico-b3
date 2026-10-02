@@ -93,7 +93,7 @@ Saídas: `data/processed/vpa_trimestral.{parquet,csv}` (fora do git; só `amostr
   Contra o mix (o teste de timing): +0,19 p.p., IC [−3,5; +4,0] → **sem edge de retorno**;
   ganho real é drawdown (−20% vs −33% mix vs −49% B&H). DSR 0,60. Caixa a 0% → perde do B&H.
 - Variações (02/10, pedido do usuário; `config.VARIANTES`): E2 −2σ/+2σ 11,01% (expo 34%, DD −11,5%,
-  36 slots nunca compram), E3 −1σ/+1σ 10,42% (pior), E4 −1σ/+3σ 11,58% (maior CAGR), E5 −2σ/+3σ 11,43% (Sharpe 0,24, DSR 0,67, só 31
+  36 slots nunca compram), E3 −1σ/+1σ 10,42% (pior), E4 −1σ/+3σ 11,58% (maior CAGR), E5 −2σ/+3σ 11,43% (Sharpe 0,24, DSR 0,66, só 31
   round trips; vs mix +0,44 p.p. IC [−1,5; +2,4]). E6 = E1 + compra só com MACD(12,26) > 0
   (sinal de compra do Cenário 2 de /app/Codigos_soltos/hilo_macd_vwap_81; lá sobre adj close, aqui sobre
   close só-split — concordam em 98% dos pregões): 9,75%, abaixo do CDI; perde a compra no fundo do V (2020). Nenhuma bate o

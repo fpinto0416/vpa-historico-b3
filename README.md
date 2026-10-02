@@ -34,7 +34,7 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | Estratégia 6 | média **e** MACD(12,26) > 0 | média + 2σ | 9,75% | 0,05 | −15,6% | 70% | −1,53 p.p. [−5,6; +2,0] | 0 |
 
 Nenhuma se distingue do mix fixo com a própria exposição. A Estratégia 5 tem o melhor Sharpe (0,24)
-e DSR (0,67), mas com só 31 operações fechadas em 13 anos e +0,04 p.p. sem os 5 maiores ganhadores. A Estratégia 6 usa como confirmação o sinal de compra do Cenário 2 do estudo HiLo+MACD
+e DSR (0,66), mas com só 31 operações fechadas em 13 anos e +0,04 p.p. sem os 5 maiores ganhadores. A Estratégia 6 usa como confirmação o sinal de compra do Cenário 2 do estudo HiLo+MACD
 (linha do MACD > 0); a venda continua só pelo P/VPA. Ela fica abaixo do CDI: o MACD só confirma depois
 que o preço volta a subir, e a compra no fundo de um V fica para trás (2020: −8,1 p.p. contra a Estratégia 1).
 Exigir mais desconto na compra reduz a
