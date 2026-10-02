@@ -1,0 +1,21 @@
+name: ci
+
+# Só lint + testes. Sem on:schedule por decisão de projeto: a rodada periódica
+# do pipeline, quando existir, será disparada por cron na VPS via workflow_dispatch.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check src tests
+      - run: pytest -q

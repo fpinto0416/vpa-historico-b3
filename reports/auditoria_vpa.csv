@@ -1,0 +1,21 @@
+ticker,ref_date,evento,detalhe
+PETR4,2020-03-31,outlier_vpa,vpa_ajustado=17.7726
+PETR4,2020-12-31,outlier_vpa,vpa_ajustado=23.6435
+ITUB4,2018-09-30,correcao_timing_split,ações na base atual 16662128024 → 11108085349 (do trimestre seguinte)
+ITUB4,2018-09-30,salto_n_acoes_sem_split,ações x1.500 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+ITUB4,2018-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x1.500 (emissão/recompra/cancelamento ou split ausente no yfinance)
+IRBR3,2022-12-31,correcao_timing_split,ações na base atual 2728096 → 81842887 (do trimestre seguinte)
+IRBR3,2020-09-30,salto_n_acoes_sem_split,ações x1.359 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+IRBR3,2022-09-30,salto_n_acoes_sem_split,ações x1.956 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+IRBR3,2022-12-31,salto_n_acoes_sem_split,ações x0.033 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+IRBR3,2023-03-31,salto_n_acoes_sem_split,ações x1.000 vs splits x0.033 (emissão/recompra/cancelamento ou split ausente no yfinance)
+IRBR3,2022-09-30,outlier_vpa,vpa_ajustado=50.1793
+TAEE11,2012-09-30,correcao_timing_split,ações na base atual 3100490163 → 1033496721 (do trimestre seguinte)
+TAEE11,2012-09-30,salto_n_acoes_sem_split,ações x3.922 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TAEE11,2012-12-31,salto_n_acoes_sem_split,ações x1.000 vs splits x3.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+TAEE11,2012-09-30,outlier_vpa,vpa_ajustado=12.2986
+AXIA3,2020-03-31,salto_n_acoes_sem_split,ações x1.160 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AXIA3,2022-06-30,salto_n_acoes_sem_split,ações x1.400 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AXIA3,2025-12-31,salto_n_acoes_sem_split,ações x1.263 vs splits x1.000 (emissão/recompra/cancelamento ou split ausente no yfinance)
+AXIA3,2016-06-30,outlier_vpa,vpa_ajustado=37.6594
+AXIA3,2018-12-31,outlier_vpa,vpa_ajustado=41.0628

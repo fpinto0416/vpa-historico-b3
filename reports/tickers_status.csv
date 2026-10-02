@@ -1,0 +1,6 @@
+ticker,status,erro,n_trimestres,ref_ini,ref_fim,pct_consolidado,n_outliers,n_pl_negativo
+PETR4,ok,,63,2010-12-31,2026-06-30,1.0,2,0
+ITUB4,ok,,63,2010-12-31,2026-06-30,0.968,0,0
+IRBR3,ok,,39,2016-12-31,2026-06-30,1.0,1,0
+TAEE11,ok,,63,2010-12-31,2026-06-30,1.0,1,0
+AXIA3,ok,,63,2010-12-31,2026-06-30,1.0,2,0

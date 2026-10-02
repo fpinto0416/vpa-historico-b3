@@ -1,0 +1,6 @@
+ticker,cnpj,cod_cvm,denom_social,situacao_cvm,valor_mobiliario,composicao_unit,fator_unit,fca_ano_min,fca_ano_max,metodo,status
+PETR4,33.000.167/0001-01,009512,PETRÓLEO BRASILEIRO S.A. - PETROBRAS,ATIVO,Ações Preferenciais,,1.0,2018,2026,fca,ok
+ITUB4,60.872.504/0001-23,019348,ITAÚ UNIBANCO HOLDING S.A.,ATIVO,Ações Preferenciais,,1.0,2018,2026,fca,ok
+IRBR3,33.376.989/0001-91,024180,IRB - BRASIL RESSEGUROS S.A.,ATIVO,Ações Ordinárias,,1.0,2019,2026,fca,ok
+TAEE11,07.859.971/0001-30,020257,TRANSMISSORA ALIANÇA DE ENERGIA ELÉTRICA S.A.,ATIVO,Units,1 ON / 2 PN,3.0,2018,2026,fca,ok
+AXIA3,00.001.180/0001-26,002437,AXIA ENERGIA S.A.,ATIVO,Ações Ordinárias,,1.0,2026,2026,fca,ok
