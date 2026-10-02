@@ -189,8 +189,28 @@ a { color: var(--accent); }
     </figure>
   </section>
 
+  <section aria-labelledby="sv">
+    <h2 id="sv"><span class="n">03</span>Variações da estratégia</h2>
+    <p class="ink2" id="txt-var"></p>
+    <figure>
+      <div class="fig-head"><h3>Patrimônio por variação (R$ milhões)</h3><div class="legend" id="leg-var"></div></div>
+      <div class="chart" id="ch-var"></div>
+      <figcaption>Mesmo universo, custo de 0,1% e caixa no CDI. A régua de compra e venda é sempre relativa à média e ao desvio expandidos do P/VPA do próprio ativo, até o dia anterior.</figcaption>
+    </figure>
+    <figure>
+      <h3>Comparação</h3>
+      <div class="scroll"><table id="tb-var"></table></div>
+      <figcaption>"vs mix" compara cada variação com um mix fixo que tem a <em>sua própria</em> exposição média; é o teste do timing. Ativos +/=/− contra o buy &amp; hold do próprio ativo. "Nunca compraram" são slots que passaram o período inteiro no CDI porque o P/VPA não chegou à faixa de compra.</figcaption>
+    </figure>
+    <figure>
+      <div class="fig-head"><h3>Resultado ativo a ativo contra o buy &amp; hold</h3>
+        <div class="legend"><span><i class="box" style="background:var(--pos)"></i>ganha com IC &gt; 0</span><span><i class="box" style="background:color-mix(in srgb, var(--pos) 45%, transparent)"></i>ganha</span><span><i class="box" style="background:var(--zero)"></i>empata</span><span><i class="box" style="background:color-mix(in srgb, var(--neg) 45%, transparent)"></i>perde</span><span><i class="box" style="background:var(--neg)"></i>perde com IC &lt; 0</span></div></div>
+      <div class="chart" id="ch-var-ativos"></div>
+    </figure>
+  </section>
+
   <section aria-labelledby="s3">
-    <h2 id="s3"><span class="n">03</span>Ativo por ativo</h2>
+    <h2 id="s3"><span class="n">04</span>Ativo por ativo</h2>
     <p class="ink2" id="txt-ativos"></p>
     <figure>
       <div class="fig-head"><h3>Diferença de CAGR contra o buy &amp; hold do próprio ativo, com IC de 95%</h3>
@@ -210,7 +230,7 @@ a { color: var(--accent); }
   </section>
 
   <section aria-labelledby="s4">
-    <h2 id="s4"><span class="n">04</span>De onde vem o resultado</h2>
+    <h2 id="s4"><span class="n">05</span>De onde vem o resultado</h2>
     <div class="grid2">
       <figure>
         <h3>Concentração do alpha</h3>
@@ -231,7 +251,7 @@ a { color: var(--accent); }
   </section>
 
   <section aria-labelledby="s5">
-    <h2 id="s5"><span class="n">05</span>Sensibilidade</h2>
+    <h2 id="s5"><span class="n">06</span>Sensibilidade</h2>
     <p class="ink2">A grade inteira é mostrada, sem escolher a melhor célula. Cada número é a diferença de CAGR da carteira contra o buy &amp; hold equal-weight com o mesmo custo; a linha marcada é a configuração principal.</p>
     <figure>
       <div class="scroll"><table class="sens" id="tb-sens"></table></div>
@@ -240,7 +260,7 @@ a { color: var(--accent); }
   </section>
 
   <section aria-labelledby="s6">
-    <h2 id="s6"><span class="n">06</span>Posições ao longo do tempo</h2>
+    <h2 id="s6"><span class="n">07</span>Posições ao longo do tempo</h2>
     <figure>
       <div class="fig-head"><h3>Fração do mês comprado, por ativo</h3>
         <div class="legend"><span><i class="box" style="background:var(--heat-0)"></i>caixa</span><span><i class="box" style="background:var(--heat-1)"></i>comprado</span><span><i class="box" style="background:var(--bg);outline:1px solid var(--rule)"></i>aquecimento</span></div></div>
@@ -250,7 +270,7 @@ a { color: var(--accent); }
   </section>
 
   <section aria-labelledby="s7">
-    <h2 id="s7"><span class="n">07</span>Disponibilidade dos dados</h2>
+    <h2 id="s7"><span class="n">08</span>Disponibilidade dos dados</h2>
     <figure>
       <div class="fig-head"><h3>Balanços por ativo e trimestre de referência</h3>
         <div class="legend"><span><i class="box" style="background:var(--d-con)"></i>consolidado</span><span><i class="box" style="background:var(--d-ind)"></i>individual</span><span><i class="box" style="background:var(--d-neg)"></i>PL ≤ 0</span><span><i class="box" style="background:var(--d-quebra)"></i>quebra estrutural</span></div></div>
@@ -264,15 +284,15 @@ a { color: var(--accent); }
   </section>
 
   <section aria-labelledby="s8">
-    <h2 id="s8"><span class="n">08</span>Limitações e próximos passos</h2>
+    <h2 id="s8"><span class="n">09</span>Limitações e próximos passos</h2>
     <ol class="lim">
       <li><b>Survivorship bias.</b> A lista é a de hoje. Empresas que quebraram ou saíram da bolsa entre 2013 e 2026 não entram, o que favorece qualquer estratégia que compra o "barato".</li>
       <li><b>Histórico curto.</b> Os dados abertos da CVM começam em 2010 (DFP) e 2011 (ITR). Com o aquecimento de 8 trimestres o backtest começa em 2013, e vários ativos só ficam elegíveis depois de 2020.</li>
       <li><b>Nº de ações antes de 2020.</b> Vem dos eventos de capital do Formulário de Referência, sem descontar tesouraria. Splits que a CVM e o yfinance registram em datas diferentes foram corrigidos por regra e estão em <span class="mono">reports/auditoria_vpa.csv</span>.</li>
       <li><b>Preço e proventos.</b> O sinal usa o fechamento ajustado só por split; o retorno usa o preço ajustado por proventos do yfinance, então dividendos estão no preço e não no caixa. Frações de ação são permitidas.</li>
       <li><b>P/VPA só se compara com a própria história.</b> Nunca entre setores. Bancos, utilities e varejo têm níveis estruturalmente diferentes.</li>
-      <li><b>Custos.</b> 0,1% por operação pode subestimar o slippage em papéis ilíquidos (POMO4, AXIA3, EMBJ3, RIAA3, ROMI3). A grade com 0,5% está na seção 05.</li>
-      <li><b>Teste múltiplo.</b> A grade tem 37 variantes. O Deflated Sharpe da configuração principal desconta isso.</li>
+      <li><b>Custos.</b> 0,1% por operação pode subestimar o slippage em papéis ilíquidos (POMO4, AXIA3, EMBJ3, RIAA3, ROMI3). A grade com 0,5% está na seção 06.</li>
+      <li><b>Teste múltiplo.</b> A grade tem <span id="n-trials"></span> variantes, incluindo as quatro estratégias comparadas na seção 03. O Deflated Sharpe desconta isso.</li>
     </ol>
     <div class="cols">
       <p><b>Próximos passos.</b> Remontar a lista com a composição histórica do IBrA para tirar o survivorship; emendar PETZ3 → AUAU3 com a relação de troca; testar o sinal em z-score do P/VPA contra ROE (o desconto de um banco com ROE caindo não é o mesmo de um banco com ROE estável).</p>
@@ -439,6 +459,7 @@ function renderTexto() {
     `<b>Risco:</b> drawdown máximo de ${pct(AG.estrategia.max_drawdown, 0)} contra ${pct(AG.bh_equal_weight.max_drawdown, 0)} do buy & hold e ${pct(AG.mix_mesma_exposicao.max_drawdown, 0)} do mix. Esse é o ganho mais claro do sinal.`,
     `<b>Sem os 5 maiores ganhadores</b> (${D.conc.top5.join(", ")}) a vantagem sobre o buy & hold cai para ${pp(D.conc.sem_top5, 2)}.`,
     `<b>Caixa sem CDI:</b> com o caixa rendendo zero, o CAGR cai para ${pct(sz.cagr)} e a diferença vira ${pp(sz.dif_cagr_vs_ew, 2)}. Num país de juro alto, o caixa é metade da estratégia.`,
+    `<b>Variações:</b> ${D.variantes.map((v) => `${v.nome.replace("Estratégia ", "E")} ${pct(v.cagr, 1)}`).join(" · ")}. Nenhuma se distingue do mix com a própria exposição (seção 03).`,
     `<b>Deflated Sharpe:</b> ${num(D.dsr.dsr)} (probabilidade de o Sharpe ${num(D.dsr.sharpe_anual)} ser real depois de ${D.dsr.n_tentativas} variantes; o limiar usual é 0,95).`,
   ];
   $("bullets").innerHTML = b.map((x) => `<li>${x.replace(/p\.p\.\./g, "p.p.")}</li>`).join("");
@@ -555,7 +576,7 @@ function histChart(host) {
 function tableSens() {
   const S = D.sens.filter((s) => s.caixa_rende_cdi);
   const gat = [["maximo", 0, "Máximo expandido"], ["desvio", 1, "Média + 1σ"], ["desvio", 2, "Média + 2σ"], ["desvio", 3, "Média + 3σ"]];
-  const kc = [0, 0.5, 1], cu = [0, 0.001, 0.005];
+  const kc = [0, 0.5, 1, 2], cu = [0, 0.001, 0.005];
   const mx = Math.max(...S.map((s) => Math.abs(s.dif_cagr_vs_ew)));
   const cor = (v) => {
     const a = Math.min(1, Math.abs(v) / mx) * 0.55;
@@ -633,6 +654,64 @@ function renderOutros() {
     ex.map((e) => `<tr><td class="t">${e.ticker}</td><td>${esc(e.status_vpa)}</td><td>${esc(e.status_backtest || "—")}</td><td style="white-space:normal">${esc(e.obs_mapeamento || (e.status_backtest === "sem_historico_suficiente" ? "Histórico de preço curto demais para o aquecimento de 8 trimestres" : ""))}</td></tr>`).join("");
 }
 
+
+/* ---------- variações ---------- */
+const V = D.variantes, CV = D.curvas_var;
+const VCOR = ["--s1", "--s2", "--s3", "--s4"];
+const regra = (v) => ({ compra: v.k_compra ? `média − ${num(v.k_compra, 0)}σ` : "média", venda: `média + ${num(v.k_venda, 0)}σ` });
+function renderVariantes() {
+  const series = V.map((v, i) => ({ key: v.nome, label: `${v.nome} (${regra(v).compra} / ${regra(v).venda})`, short: v.nome.replace("Estratégia", "Estr."),
+    color: VCOR[i], w: i === 0 ? 2.5 : 2, values: CV.series[v.nome] }));
+  series.push({ key: "ew", label: "Buy & hold equal-weight", short: "B&H EW", color: "--ink-2", w: 1.25, values: CV.ew });
+  series.push({ key: "cdi", label: "CDI", short: "CDI", color: "--muted", dash: true, w: 1.5, values: CV.cdi });
+  lineChart($("ch-var"), { x: CV.datas, series, yfmt: (v) => mi(v), tipfmt: (v) => "R$ " + mi(v) + " mi", height: 320 });
+  legend($("leg-var"), series);
+
+  const W = Math.max(300, $("ch-var-ativos").clientWidth), rh = 26, L = 104, H = V.length * rh + 6;
+  const host = $("ch-var-ativos"); host.innerHTML = "";
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}` }, host);
+  const n = A.length, X = lin(0, n, L, W - 8);
+  const mixc = (v, a) => `color-mix(in srgb, ${css(v)} ${a}%, transparent)`;
+  V.forEach((v, i) => {
+    const y = i * rh + 3;
+    const partes = [
+      [v.ativos_ganham_sig, css("--pos"), "ganha com IC > 0"], [v.ativos_ganham - v.ativos_ganham_sig, mixc("--pos", 45), "ganha (IC cruza zero)"],
+      [v.ativos_empatam, css("--zero"), "empata"], [v.ativos_perdem - v.ativos_perdem_sig, mixc("--neg", 45), "perde (IC cruza zero)"],
+      [v.ativos_perdem_sig, css("--neg"), "perde com IC < 0"]];
+    el("text", { x: L - 8, y: y + 15, "text-anchor": "end", class: "lbl" }, svg).textContent = v.nome;
+    let acc = 0;
+    for (const [q, cor, nome] of partes) {
+      if (!q) continue;
+      const r = el("rect", { x: X(acc) + 1, y, width: Math.max(1, X(acc + q) - X(acc) - 2), height: rh - 8, rx: 3, fill: cor }, svg);
+      if (X(acc + q) - X(acc) > 22) el("text", { x: (X(acc) + X(acc + q)) / 2, y: y + 13, "text-anchor": "middle", style: "fill:var(--ink);font-size:10.5px" }, svg).textContent = q;
+      r.addEventListener("pointermove", (ev) => showTip(ev, `<b>${v.nome}</b><div>${nome}: ${q} de ${n}</div>`));
+      r.addEventListener("pointerleave", hideTip);
+      acc += q;
+    }
+  });
+}
+function textoVariantes() {
+  const best = (k, dir = 1) => V.reduce((a, b) => (b[k] * dir > a[k] * dir ? b : a));
+  const bc = best("cagr"), bs = best("sharpe"), bd = best("max_drawdown"), pior = best("cagr", -1);
+  const sigMix = V.filter((v) => v.mix_ic_lo > 0 || v.mix_ic_hi < 0);
+  const risco = bs === bd
+    ? `Maior Sharpe e menor drawdown: <b>${bs.nome}</b> (${num(bs.sharpe)}, ${pct(bd.max_drawdown, 0)}), com ${pct(bs.exposicao_media, 0)} de exposição média. `
+    : `Maior Sharpe: <b>${bs.nome}</b> (${num(bs.sharpe)}). Menor drawdown: <b>${bd.nome}</b> (${pct(bd.max_drawdown, 0)}, exposição ${pct(bd.exposicao_media, 0)}). `;
+  $("txt-var").innerHTML = (`Maior CAGR: <b>${bc.nome}</b> (${pct(bc.cagr, 2)}). ` + risco +
+    `Menor CAGR: <b>${pior.nome}</b> (${pct(pior.cagr, 2)}, venda em média + ${num(pior.k_venda, 0)}σ). ` +
+    (sigMix.length ? `${sigMix.map((v) => v.nome).join(", ")} se distingue do mix de mesma exposição.` :
+      `Nenhuma das quatro se distingue do mix fixo com a própria exposição: todos os intervalos de confiança cruzam zero.`)).replace(/p\.p\.\./g, "p.p.");
+  const h = `<tr><th>Variação</th><th>Compra</th><th>Venda</th><th class="num">CAGR</th><th class="num">Sharpe</th><th class="num">Máx. DD</th><th class="num">Exposição</th>` +
+    `<th class="num">vs B&amp;H (IC 95%)</th><th class="num">vs mix (IC 95%)</th><th class="num">Ativos + / = / −</th><th class="num">Nunca compraram</th><th class="num">Nunca venderam</th>` +
+    `<th class="num">Trades</th><th class="num">Duração média</th><th class="num">Sem top 5</th><th class="num">DSR</th></tr>`;
+  const ic = (d, lo, hi) => `<span class="${sgn(d)}">${pp(d, 2)}</span> <span class="muted">[${pp(lo)}; ${pp(hi)}]</span>`;
+  $("tb-var").innerHTML = h + V.map((v, i) => `<tr class="${i === 0 ? "hl" : ""}"><td><span class="legend"><span><i style="background:var(${VCOR[i]})"></i>${v.nome}${i === 0 ? '<span class="tag-main">principal</span>' : ""}</span></span></td>` +
+    `<td class="mono">${regra(v).compra}</td><td class="mono">${regra(v).venda}</td><td class="num">${pct(v.cagr, 2)}</td><td class="num">${num(v.sharpe)}</td><td class="num">${pct(v.max_drawdown)}</td>` +
+    `<td class="num">${pct(v.exposicao_media, 0)}</td><td class="num">${ic(v.dif_cagr_vs_ew, v.ew_ic_lo, v.ew_ic_hi)}</td><td class="num">${ic(v.dif_cagr_vs_mix, v.mix_ic_lo, v.mix_ic_hi)}</td>` +
+    `<td class="num">${v.ativos_ganham} / ${v.ativos_empatam} / ${v.ativos_perdem}</td><td class="num">${v.nunca_compraram}</td><td class="num">${v.nunca_venderam}</td>` +
+    `<td class="num">${v.n_trades}</td><td class="num">${num(v.dias_medio_trade / 365.25, 1)} a</td><td class="num ${sgn(v.dif_cagr_sem_top5)}">${pp(v.dif_cagr_sem_top5, 2)}</td><td class="num">${num(v.dsr)}</td></tr>`).join("");
+}
+
 function renderCharts() {
   const toMi = (k) => C[k].map((v) => v);
   lineChart($("ch-curva"), {
@@ -647,6 +726,7 @@ function renderCharts() {
   contribChart($("ch-contrib"));
   histChart($("ch-hist"));
   renderHeatmaps();
+  renderVariantes();
 }
 
 function render() {
@@ -655,7 +735,8 @@ function render() {
   tableAtivos("tb-top", ord.slice(0, 10), false);
   tableAtivos("tb-bot", ord.slice(-10).reverse(), false);
   tableAtivos("tb-all", ord, true);
-  tableSens(); renderOutros(); renderCharts();
+  tableSens(); renderOutros(); textoVariantes(); renderCharts();
+  $("n-trials").textContent = D.dsr.n_tentativas;
   window.__relatorioPronto = true;
 }
 render();

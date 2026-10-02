@@ -233,7 +233,7 @@ def grade_sensibilidade() -> list[ParamsEstrategia]:
     base = ParamsEstrategia()
     gatilhos = [("maximo", 0.0), ("desvio", 1.0), ("desvio", 2.0), ("desvio", 3.0)]
     grade = [replace(base, gatilho_venda=g, k_venda=k, k_compra=kc, custo=c)
-             for (g, k), kc, c in itertools.product(gatilhos, (0.0, 0.5, 1.0), (0.0, 0.001, 0.005))]
+             for (g, k), kc, c in itertools.product(gatilhos, (0.0, 0.5, 1.0, 2.0), (0.0, 0.001, 0.005))]
     grade.append(replace(base, caixa_rende_cdi=False))
     return grade
 
@@ -254,6 +254,67 @@ def _resumo(res: dict, dados: dict, bh_por_custo: dict) -> dict:
             "ativos_que_batem_bh": int((dif > 0).sum()), "n_ativos": len(dif),
             "mediana_dif_cagr": float(np.median(dif)), "n_trades": len(res["trades"]),
             "pct_tempo_exposto": res["comprado"].to_numpy().mean()}
+
+
+def mix_mesma_exposicao(res: dict, dados: dict) -> tuple[pd.Series, float]:
+    """Mix estático com a mesma exposição média da estratégia (ativo + CDI, rebalanceado
+    diariamente, slot a slot): separa o ganho de timing do efeito de ficar parte em caixa.
+
+    Antes de o ativo ficar elegível o slot rende CDI, como no B&H.
+    """
+    cdi = dados["cdi"]
+    elig = pd.DataFrame({t: res["valor"].index >= a["elegivel_desde"] for t, a in dados["ativos"].items()},
+                        index=res["valor"].index)
+    exposicao = float(res["comprado"].where(elig).stack().mean())
+    r_bh = res["bh"].pct_change().fillna(0)
+    r_cdi = pd.DataFrame({t: cdi - 1 for t in r_bh.columns})
+    r_slot = r_cdi.where(~elig, exposicao * r_bh + (1 - exposicao) * r_cdi)
+    mix = (1 + r_slot).cumprod() * res["bh"].iloc[0]
+    return mix.sum(axis=1), exposicao
+
+
+def avaliar_variante(nome: str, res: dict, dados: dict, sharpes_grade: np.ndarray) -> dict:
+    """Mesmo conjunto de testes da configuração principal, para uma variação de k_compra/k_venda."""
+    cdi, p = dados["cdi"], res["params"]
+    agg, ew = res["valor"].sum(axis=1), res["bh"].sum(axis=1)
+    mix, exposicao = mix_mesma_exposicao(res, dados)
+    rng = np.random.default_rng(SEMENTE)
+    _, ew_lo, ew_hi = bootstrap_dif_cagr(agg, ew, rng)
+    _, mix_lo, mix_hi = bootstrap_dif_cagr(agg, mix, rng)
+    pa = metricas_por_ativo(res, dados)
+    ic, _ = bootstraps(res, dados, pa)
+    pa = pa.merge(ic, on="ticker")
+    top5 = pa.nlargest(5, "dif_cagr")["ticker"].tolist()
+    resto = [t for t in res["valor"].columns if t not in top5]
+    rt = round_trips(res["trades"], res["valor"])
+    fechados = rt[~rt["aberta"]]
+    m = metricas(agg, cdi)
+    return {
+        "resumo": {
+            "nome": nome, "k_compra": p.k_compra, "k_venda": p.k_venda, **m,
+            "exposicao_media": exposicao,
+            "dif_cagr_vs_ew": m["cagr"] - cagr(ew), "ew_ic_lo": ew_lo, "ew_ic_hi": ew_hi,
+            "cagr_mix": cagr(mix), "dd_mix": metricas(mix, cdi)["max_drawdown"],
+            "dif_cagr_vs_mix": m["cagr"] - cagr(mix), "mix_ic_lo": mix_lo, "mix_ic_hi": mix_hi,
+            "ativos_ganham": int((pa["dif_cagr"] > 5e-5).sum()),
+            "ativos_perdem": int((pa["dif_cagr"] < -5e-5).sum()),
+            "ativos_empatam": int((pa["dif_cagr"].abs() <= 5e-5).sum()),
+            "ativos_ganham_sig": int((pa["dif_cagr_ic_lo"] > 0).sum()),
+            "ativos_perdem_sig": int((pa["dif_cagr_ic_hi"] < 0).sum()),
+            "nunca_venderam": int(pa["nunca_vendeu"].sum()),
+            "nunca_compraram": int((pa["n_trades"] == 0).sum()),
+            "n_trades": len(res["trades"]), "n_round_trips": len(fechados),
+            "acerto": (fechados["retorno"] > 0).mean() if len(fechados) else np.nan,
+            "ret_medio_trade": fechados["retorno"].mean() if len(fechados) else np.nan,
+            "dias_medio_trade": fechados["dias"].mean() if len(fechados) else np.nan,
+            "dif_cagr_sem_top5": cagr(res["valor"][resto].sum(axis=1)) - cagr(res["bh"][resto].sum(axis=1)),
+            "top5": ", ".join(top5),
+            "dsr": deflated_sharpe(agg.pct_change() - (cdi - 1), sharpes_grade)["dsr"],
+        },
+        "curva": agg,
+        "por_ativo": pa[["ticker", "dif_cagr", "dif_cagr_ic_lo", "dif_cagr_ic_hi", "pct_tempo_exposto",
+                         "n_trades", "nunca_vendeu"]].assign(variante=nome),
+    }
 
 
 def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
@@ -296,37 +357,42 @@ def rodar_tudo(vpa: pd.DataFrame | None = None) -> dict:
         .sort_values(ascending=False),
     }
 
-    # Mix estático com a mesma exposição média da estratégia (EW + CDI, rebalanceado
-    # diariamente): separa o ganho de timing do simples efeito de ficar parte em caixa.
-    elig = pd.DataFrame({t: principal["valor"].index >= a["elegivel_desde"] for t, a in dados["ativos"].items()},
-                        index=principal["valor"].index)
-    exposicao = float(principal["comprado"].where(elig).stack().mean())
-    # Por slot: antes de elegível, CDI (igual ao B&H); depois, exposição·ativo + resto·CDI.
-    r_bh = principal["bh"].pct_change().fillna(0)
-    r_cdi = pd.DataFrame({t: cdi - 1 for t in r_bh.columns})
-    r_slot = r_cdi.where(~elig, exposicao * r_bh + (1 - exposicao) * r_cdi)
-    mix = (1 + r_slot).cumprod() * principal["bh"].iloc[0]
+    mix, exposicao = mix_mesma_exposicao(principal, dados)
     curvas = pd.DataFrame({
         "estrategia": agg,
         "bh_equal_weight": principal["bh"].sum(axis=1),
-        "mix_mesma_exposicao": mix.sum(axis=1),
+        "mix_mesma_exposicao": mix,
         "ibov": p.capital_inicial * dados["ibov"] / dados["ibov"].iloc[0],
         "cdi": p.capital_inicial * cdi.cumprod() / cdi.iloc[0],
     })
     metricas_agregadas = pd.DataFrame({k: metricas(v, cdi, principal["comprado"].mean(axis=1) if k == "estrategia"
                                                    else None) for k, v in curvas.items()}).T
 
+    # Variações lado a lado (mesmo custo e mesmo B&H da principal).
+    variantes, curvas_var, por_ativo_var = [], {}, []
+    for nome, (kc, kv) in config.VARIANTES.items():
+        q = replace(p, k_compra=kc, k_venda=kv, gatilho_venda="desvio")
+        r = principal if q == p else {**rodar(dados, q, com_bh=False), "bh": principal["bh"]}
+        av = avaliar_variante(nome, r, dados, sens["sharpe_diario"].to_numpy())
+        variantes.append(av["resumo"])
+        curvas_var[nome] = av["curva"]
+        por_ativo_var.append(av["por_ativo"])
+        log(LOG, "variante avaliada", variante=nome, cagr=round(av["resumo"]["cagr"], 4))
+
     rt = round_trips(principal["trades"], principal["valor"])
-    _, mix_lo, mix_hi = bootstrap_dif_cagr(agg, curvas["mix_mesma_exposicao"], np.random.default_rng(SEMENTE))
-    agregado.update({"exposicao_media": exposicao,
+    # ICs agregados da principal = os da tabela de variantes (mesma ordem de sorteio).
+    v1 = next(v for v in variantes if (v["k_compra"], v["k_venda"]) == (p.k_compra, p.k_venda))
+    agregado.update({"exposicao_media": exposicao, "ic_lo": v1["ew_ic_lo"], "ic_hi": v1["ew_ic_hi"],
                      "dif_cagr_vs_mix": cagr(agg) - cagr(curvas["mix_mesma_exposicao"]),
-                     "mix_ic_lo": mix_lo, "mix_ic_hi": mix_hi})
+                     "mix_ic_lo": v1["mix_ic_lo"], "mix_ic_hi": v1["mix_ic_hi"]})
     resultados = {
         "params": p, "dados_status": dados["status"], "curvas": curvas, "metricas_agregadas": metricas_agregadas,
         "por_ativo": por_ativo, "agregado_bootstrap": agregado, "dsr": dsr, "sensibilidade": sens,
         "concentracao": concentracao, "trades": principal["trades"], "round_trips": rt,
         "comprado": principal["comprado"], "valor_slots": principal["valor"], "bh_slots": principal["bh"],
         "elegivel_desde": {t: a["elegivel_desde"] for t, a in dados["ativos"].items()},
+        "variantes": pd.DataFrame(variantes), "curvas_variantes": pd.DataFrame(curvas_var),
+        "variantes_por_ativo": pd.concat(por_ativo_var, ignore_index=True),
     }
     salvar(resultados)
     return resultados
@@ -341,6 +407,8 @@ def salvar(res: dict) -> None:
     res["trades"].to_csv(d / "operacoes.csv", index=False)
     res["round_trips"].to_csv(d / "round_trips.csv", index=False)
     res["curvas"].to_csv(d / "curvas_capital.csv")
+    res["variantes"].to_csv(d / "variantes.csv", index=False)
+    res["variantes_por_ativo"].to_csv(d / "variantes_por_ativo.csv", index=False)
     with open(config.DIR_PROC / "resultados_backtest.pkl", "wb") as f:
         pickle.dump(res, f)
     log(LOG, "backtest salvo", trades=len(res["trades"]))

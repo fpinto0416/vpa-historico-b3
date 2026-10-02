@@ -78,6 +78,16 @@ class ParamsEstrategia:
     caixa_rende_cdi: bool = True
 
 
+# Variações comparadas lado a lado no relatório: nome → (k_compra, k_venda).
+# Compra em P/VPA < média − k_compra·σ; venda em P/VPA >= média + k_venda·σ.
+VARIANTES: dict[str, tuple[float, float]] = {
+    "Estratégia 1": (0.0, 2.0),   # principal
+    "Estratégia 2": (2.0, 2.0),
+    "Estratégia 3": (1.0, 1.0),
+    "Estratégia 4": (1.0, 3.0),
+}
+
+
 @dataclass(frozen=True)
 class ParamsRede:
     concorrencia: int = 2

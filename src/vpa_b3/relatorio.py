@@ -115,6 +115,7 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
 
     conc = res["concentracao"]
     rt = res["round_trips"]
+    cv = res["curvas_variantes"].apply(_amostrar)
     excluidos = status[status["status_backtest"].ne("ok")][
         ["ticker", "status_vpa", "status_backtest", "obs_mapeamento"]].fillna("")
 
@@ -151,6 +152,11 @@ def montar_dados(res: dict, vpa: pd.DataFrame, status: pd.DataFrame) -> dict:
                    "acerto": _num((rt.loc[~rt["aberta"], "retorno"] > 0).mean()),
                    "ret_medio": _num(rt.loc[~rt["aberta"], "retorno"].mean()),
                    "dias_medio": _num(rt.loc[~rt["aberta"], "dias"].mean())},
+        "variantes": _registros(res["variantes"]),
+        "curvas_var": {"datas": [d.strftime("%Y-%m-%d") for d in cv.index],
+                       "series": {c: [round(float(v), 2) for v in cv[c]] for c in cv.columns},
+                       "ew": [round(float(v), 2) for v in curvas["bh_equal_weight"]],
+                       "cdi": [round(float(v), 2) for v in curvas["cdi"]]},
         "pos": pos, "disp": disp,
         "excluidos": _registros(excluidos),
     }

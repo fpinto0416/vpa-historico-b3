@@ -16,11 +16,24 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | CDI | 9,78% | — | 0,0% |
 | Ibovespa | 8,21% | 0,05 | −46,8% |
 
-- Contra o buy & hold: **+0,57 p.p./ano, IC 95% [−8,1; +7,8]** (bootstrap estacionário em blocos).
-- Contra o mix de mesma exposição, que isola o *timing*: **+0,19 p.p./ano, IC [−3,5; +4,0]**.
+- Contra o buy & hold: **+0,57 p.p./ano, IC 95% [−7,7; +8,4]** (bootstrap estacionário em blocos).
+- Contra o mix de mesma exposição, que isola o *timing*: **+0,19 p.p./ano, IC [−3,6; +3,7]**.
 - Ativo por ativo: 52 ganham, 20 perdem, 15 empatam (compraram no 1º sinal e nunca venderam). Só 6 ganham com IC > 0.
 - Sem os 5 maiores ganhadores: +0,29 p.p. Com caixa a 0%: −1,69 p.p. contra o buy & hold.
-- Deflated Sharpe 0,60 (37 variantes testadas; limiar usual 0,95).
+- Deflated Sharpe 0,59 (49 variantes testadas; limiar usual 0,95).
+
+### Variações (`config.VARIANTES`, seção 03 do relatório)
+
+| Variação | Compra | Venda | CAGR | Sharpe | Máx. DD | Exposição | vs mix de mesma exposição (IC 95%) | Nunca compraram |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Estratégia 1 (principal) | média | média + 2σ | 11,45% | 0,19 | −20,5% | 75% | +0,19 p.p. [−3,6; +3,7] | 0 |
+| Estratégia 2 | média − 2σ | média + 2σ | 11,01% | 0,22 | −11,5% | 34% | +0,18 p.p. [−1,9; +2,2] | 36 |
+| Estratégia 3 | média − 1σ | média + 1σ | 10,42% | 0,11 | −12,7% | 50% | −0,72 p.p. [−3,3; +1,8] | 10 |
+| Estratégia 4 | média − 1σ | média + 3σ | 11,58% | 0,21 | −18,5% | 63% | +0,31 p.p. [−2,5; +3,1] | 10 |
+
+Nenhuma se distingue do mix fixo com a própria exposição. Exigir mais desconto na compra reduz a
+exposição e o drawdown sem mudar o retorno ajustado; vender cedo (média + 1σ) é a pior escolha.
+A grade de sensibilidade agora tem 49 variantes (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
 
 **Leitura:** o sinal não gera retorno distinguível de sorte. O que ele entrega é **drawdown menor**,
 em boa parte por ficar parte do tempo no CDI. Os números mudam a cada rodada; o relatório é a fonte.
@@ -87,7 +100,7 @@ flag_pl_negativo, flag_quebra_estrutural, n_acoes_fonte, receipt_date_v1`).
 - Benchmarks com as mesmas regras de slot: buy & hold por ativo (compra na elegibilidade), buy & hold
   equal-weight, mix fixo com a mesma exposição média, IBOV e CDI.
 - Validação: bootstrap estacionário em blocos (média 63 pregões, 1.000 reamostras) por ativo e agregado;
-  bootstrap entre ativos; retirada dos 5 maiores ganhadores; Deflated Sharpe sobre as 37 variantes.
+  bootstrap entre ativos; retirada dos 5 maiores ganhadores; Deflated Sharpe sobre as 49 variantes.
 
 ## Limitações
 

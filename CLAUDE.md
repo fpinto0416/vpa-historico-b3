@@ -92,6 +92,9 @@ Saídas: `data/processed/vpa_trimestral.{parquet,csv}` (fora do git; só `amostr
 - Estratégia 11,45% a.a. vs B&H EW 10,88% vs mix mesma exposição 11,27% vs CDI 9,78%.
   Contra o mix (o teste de timing): +0,19 p.p., IC [−3,5; +4,0] → **sem edge de retorno**;
   ganho real é drawdown (−20% vs −33% mix vs −49% B&H). DSR 0,60. Caixa a 0% → perde do B&H.
+- Variações (02/10, pedido do usuário; `config.VARIANTES`): E2 −2σ/+2σ 11,01% (expo 34%, DD −11,5%,
+  36 slots nunca compram), E3 −1σ/+1σ 10,42% (pior), E4 −1σ/+3σ 11,58% (maior CAGR). Nenhuma bate o
+  mix da própria exposição. Grade de sensibilidade ampliada para k_compra 2 → 49 tentativas no DSR.
 - 15 ativos compram no 1º sinal e nunca vendem (utilities/bancos ficam 8–13 anos comprados).
 - O benchmark "mix mesma exposição" foi adicionado por nós (não estava no prompt): sem ele, o ganho
   do caixa em CDI parece timing.
