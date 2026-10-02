@@ -85,6 +85,7 @@ VARIANTES: dict[str, tuple[float, float]] = {
     "Estratégia 2": (2.0, 2.0),
     "Estratégia 3": (1.0, 1.0),
     "Estratégia 4": (1.0, 3.0),
+    "Estratégia 5": (2.0, 3.0),
 }
 
 

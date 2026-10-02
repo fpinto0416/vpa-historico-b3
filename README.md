@@ -30,8 +30,10 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 | Estratégia 2 | média − 2σ | média + 2σ | 11,01% | 0,22 | −11,5% | 34% | +0,18 p.p. [−1,9; +2,2] | 36 |
 | Estratégia 3 | média − 1σ | média + 1σ | 10,42% | 0,11 | −12,7% | 50% | −0,72 p.p. [−3,3; +1,8] | 10 |
 | Estratégia 4 | média − 1σ | média + 3σ | 11,58% | 0,21 | −18,5% | 63% | +0,31 p.p. [−2,5; +3,1] | 10 |
+| Estratégia 5 | média − 2σ | média + 3σ | 11,43% | 0,24 | −16,9% | 41% | +0,44 p.p. [−1,5; +2,4] | 36 |
 
-Nenhuma se distingue do mix fixo com a própria exposição. Exigir mais desconto na compra reduz a
+Nenhuma se distingue do mix fixo com a própria exposição. A Estratégia 5 tem o melhor Sharpe (0,24)
+e DSR (0,67), mas com só 31 operações fechadas em 13 anos e +0,04 p.p. sem os 5 maiores ganhadores. Exigir mais desconto na compra reduz a
 exposição e o drawdown sem mudar o retorno ajustado; vender cedo (média + 1σ) é a pior escolha.
 A grade de sensibilidade agora tem 49 variantes (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
 
