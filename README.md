@@ -20,7 +20,7 @@ versão publicada: https://claude.ai/artifact/TpbNHt7ei6ZZWX5s7ngjgu
 - Contra o mix de mesma exposição, que isola o *timing*: **+0,19 p.p./ano, IC [−3,6; +3,7]**.
 - Ativo por ativo: 52 ganham, 20 perdem, 15 empatam (compraram no 1º sinal e nunca venderam). Só 6 ganham com IC > 0.
 - Sem os 5 ativos que mais somaram em R$ (SBSP3, DIRR3, PSSA3, ITSA4, BBAS3): −0,54 p.p. Com caixa a 0%: −1,69 p.p. contra o buy & hold.
-- Deflated Sharpe 0,58 (51 variantes testadas; limiar usual 0,95).
+- Deflated Sharpe 0,56 (53 variantes testadas; limiar usual 0,95).
 
 ### Variações (`config.VARIANTES`, seção 03 do relatório)
 
@@ -58,7 +58,7 @@ todas as candidatas ficam negativas contra o B&H (de −0,25 a −2,0 p.p.).
 
 Exigir mais desconto na compra reduz a
 exposição e o drawdown sem mudar o retorno ajustado; vender cedo (média + 1σ) é a pior escolha.
-A grade de sensibilidade agora tem 51 variantes (49 + Estratégias 6 e 9) (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
+A grade de sensibilidade agora tem 53 variantes (49 + Estratégias 6, 9, 10 e 11) (compra em média, −0,5σ, −1σ, −2σ) e o DSR as considera.
 
 **Leitura:** o sinal não gera retorno distinguível de sorte. O que ele entrega é **drawdown menor**,
 em boa parte por ficar parte do tempo no CDI. Os números mudam a cada rodada; o relatório é a fonte.
@@ -125,7 +125,7 @@ flag_pl_negativo, flag_quebra_estrutural, n_acoes_fonte, receipt_date_v1`).
 - Benchmarks com as mesmas regras de slot: buy & hold por ativo (compra na elegibilidade), buy & hold
   equal-weight, mix fixo com a mesma exposição média, IBOV e CDI.
 - Validação: bootstrap estacionário em blocos (média 63 pregões, 1.000 reamostras) por ativo e agregado;
-  bootstrap entre ativos; retirada dos 5 slots que mais somaram em R$; Deflated Sharpe sobre as 51 variantes.
+  bootstrap entre ativos; retirada dos 5 slots que mais somaram em R$; Deflated Sharpe sobre as 53 variantes.
 
 ## Limitações
 
